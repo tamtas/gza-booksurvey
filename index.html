@@ -29,7 +29,7 @@
 <div style="position:relative;padding:4rem 1.5rem 3rem;text-align:center;background:radial-gradient(ellipse at top, rgba(93,113,179,0.10), transparent 60%),#F7F8FB;border-bottom:2px solid #B9C2E0;overflow:hidden">
   <div style="font-family:'Noto Sans Georgian',serif;font-size:1.1rem;color:#5D71B3;letter-spacing:0.08em;margin-bottom:0.5rem">{{ T.eyebrow }}</div>
   <h1 style="font-family:'Space Grotesk',serif;font-weight:900;font-size:clamp(2.2rem, 5.5vw, 3.8rem);margin:0.2rem 0 0.6rem;color:#1F2430">{{ T.titlePre }}<em style="color:#5D71B3;font-style:italic">{{ T.titleEm }}</em></h1>
-  <p style="max-width:620px;margin:0 auto 1.8rem;font-size:1.02rem;color:#3A4256">{{ T.heroP1 }}</p>
+  <p style="max-width:640px;margin:0 auto 1.8rem;font-size:1.02rem;color:#3A4256">{{ T.heroP1 }}</p>
   <div style="display:flex;justify-content:center;gap:4px;margin-bottom:1.8rem"><span style="width:38px;height:4px;border-radius:2px;background:#5D71B3"></span><span style="width:38px;height:4px;border-radius:2px;background:#B08A3E"></span><span style="width:38px;height:4px;border-radius:2px;background:#1F2430"></span></div>
   <div style="display:flex;gap:2.5rem;justify-content:center;flex-wrap:wrap">
     <div style="text-align:center"><span style="font-family:'Space Grotesk',serif;font-size:2rem;font-weight:700;color:#5D71B3;display:block">{{ meta.totalBooks }}</span><span style="font-size:0.78rem;text-transform:uppercase;letter-spacing:0.06em;color:#6b7290">{{ T.statTitles }}</span></div>
@@ -54,6 +54,7 @@
     <sc-for list="{{ chips }}" as="chip" hint-placeholder-count="6">
       <button style="{{ chip.style }}" onClick="{{ chip.select }}">{{ chip.title }}</button>
     </sc-for>
+    <button style="{{ notFoundChipStyle }}" onClick="{{ openNotFound }}" title="{{ T.notFoundHeading }}">✎ {{ T.notFoundChipLabel }} ({{ T.notFoundSurveyTag }})</button>
   </div>
   <div style="display:flex;gap:0.4rem;align-items:center;flex-wrap:wrap;justify-content:center">
     <button style="{{ langAllStyle }}" onClick="{{ selectLangAll }}">{{ T.allLangs }}</button>
@@ -108,11 +109,62 @@
    </div>
   </section>
 </sc-for>
+
+<section style="max-width:1280px;margin:0 auto;padding:0 1.5rem 3rem">
+  <div style="max-width:220px">
+    <article style="display:flex;flex-direction:column;height:100%;cursor:pointer" onClick="{{ openNotFound }}">
+      <div style="position:relative;aspect-ratio:2/3;border-radius:8px;overflow:hidden;box-shadow:0 3px 10px rgba(43,27,36,0.18);background:linear-gradient(160deg,#1F2430,#3A4470);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1.2rem;text-align:center;color:#F7F8FB">
+        <div style="font-size:2.2rem;line-height:1;margin-bottom:0.6rem">＋</div>
+        <div style="font-family:'Noto Sans Georgian',serif;font-weight:700;font-size:0.95rem;line-height:1.3">{{ T.notFoundHeading }}</div>
+      </div>
+      <div style="padding:0.55rem 0.15rem 0;font-size:0.78rem;color:#4A5170;text-align:center">{{ T.notFoundSub }}</div>
+    </article>
+  </div>
+</section>
 </div>
 </sc-if>
 
 <sc-if value="{{ toastVisible }}" hint-placeholder-val="{{ false }}">
   <div style="position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);background:#1F2430;color:#F7F8FB;padding:0.7rem 1.3rem;border-radius:999px;font-size:0.85rem;font-family:'Inter',sans-serif;box-shadow:0 6px 20px rgba(0,0,0,0.25);z-index:100;max-width:90vw;text-align:center">{{ toastMsg }}</div>
+</sc-if>
+
+<sc-if value="{{ notFoundModalOpen }}" hint-placeholder-val="{{ false }}">
+  <div style="position:fixed;inset:0;background:rgba(20,23,32,0.6);backdrop-filter:blur(4px);z-index:200;display:flex;align-items:center;justify-content:center;padding:1.2rem;animation:fadeIn 0.18s ease" onClick="{{ closeNotFoundBackdrop }}">
+    <div style="background:#FFFFFF;border-radius:22px;padding:2.2rem 2rem;max-width:540px;width:100%;max-height:88vh;overflow-y:auto;position:relative;box-shadow:0 30px 70px rgba(15,17,25,0.35);border:1px solid rgba(255,255,255,0.6)" onClick="{{ stopPropagation }}">
+      <button onClick="{{ closeNotFound }}" style="position:absolute;top:1.1rem;right:1.1rem;width:32px;height:32px;border-radius:50%;background:#F1F2F7;border:none;font-size:1.1rem;color:#5A6178;cursor:pointer;line-height:1;display:flex;align-items:center;justify-content:center" style-hover="background:#E4E6F0;color:#1F2430">×</button>
+      <div style="display:inline-block;font-size:0.68rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#5D71B3;background:#5D71B31A;padding:0.28rem 0.7rem;border-radius:999px;margin-bottom:0.8rem">{{ T.notFoundSurveyTag }}</div>
+      <h3 style="font-family:'Space Grotesk',serif;font-size:1.55rem;font-weight:700;margin:0 0 0.5rem;color:#1F2430;letter-spacing:-0.01em">{{ T.notFoundHeading }}</h3>
+      <p style="font-size:0.92rem;color:#5A6178;margin:0 0 1.6rem;line-height:1.5">{{ T.notFoundSub }}</p>
+      <sc-if value="{{ notFoundSubmitted }}" hint-placeholder-val="{{ false }}">
+        <div style="padding:1.1rem;border-radius:14px;background:#E8F3E6;color:#2E5B3C;font-size:0.92rem;text-align:center;font-weight:600">{{ T.notFoundThanks }}</div>
+      </sc-if>
+      <sc-if value="{{ notFoundHidden }}" hint-placeholder-val="{{ true }}">
+      <div style="display:flex;flex-direction:column;gap:1.5rem">
+        <div>
+          <label style="display:block;font-size:0.76rem;font-weight:700;letter-spacing:0.03em;text-transform:uppercase;color:#8992AA;margin-bottom:0.55rem">{{ T.notFoundTextLabel }}</label>
+          <textarea value="{{ notFoundText }}" onChange="{{ setNotFoundText }}" placeholder="{{ T.notFoundTextPlaceholder }}" style="width:100%;min-height:76px;border:1.5px solid #E4E6F0;background:#F7F8FB;border-radius:12px;padding:0.7rem 0.8rem;font-family:'Inter',sans-serif;font-size:0.9rem;resize:vertical;outline:none;box-sizing:border-box" style-focus="border-color:#5D71B3;background:#FFFFFF"></textarea>
+        </div>
+        <div>
+          <label style="display:block;font-size:0.76rem;font-weight:700;letter-spacing:0.03em;text-transform:uppercase;color:#8992AA;margin-bottom:0.6rem">{{ T.notFoundLangLabel }}</label>
+          <div style="display:flex;gap:0.5rem;flex-wrap:wrap">
+            <sc-for list="{{ langOptions }}" as="opt" hint-placeholder-count="4">
+              <button onClick="{{ opt.select }}" style="{{ opt.style }}">{{ opt.label }}</button>
+            </sc-for>
+          </div>
+        </div>
+        <div>
+          <label style="display:block;font-size:0.76rem;font-weight:700;letter-spacing:0.03em;text-transform:uppercase;color:#8992AA;margin-bottom:0.6rem">{{ T.notFoundCollectionLabel }}</label>
+          <div style="display:flex;gap:0.5rem;flex-wrap:wrap">
+            <sc-for list="{{ collectionOptions }}" as="opt" hint-placeholder-count="6">
+              <button onClick="{{ opt.toggle }}" style="{{ opt.style }}">{{ opt.label }}</button>
+            </sc-for>
+          </div>
+        </div>
+        <button onClick="{{ submitNotFound }}" style="margin-top:0.3rem;background:#1F2430;color:#F7F8FB;border:none;border-radius:12px;padding:0.75rem 1.4rem;font-size:0.92rem;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;width:100%" style-hover="background:#343B52">{{ T.notFoundSubmit }}</button>
+      </div>
+      </sc-if>
+    </div>
+  </div>
 </sc-if>
 
 <footer style="text-align:center;padding:3rem 1.5rem 4rem;color:#8992AA;font-size:0.85rem">
@@ -134,7 +186,30 @@ class Component extends DCLogic {
     votes: {},
     toastVisible: false,
     toastMsg: '',
+    notFoundText: '',
+    notFoundLang: '',
+    notFoundCollections: [],
+    notFoundSubmitted: false,
+    notFoundModalOpen: false,
   };
+
+  // Each language has its own Google Form; field IDs come from that form's own definition.
+  NF_FORMS = {
+    ge: { action: 'https://docs.google.com/forms/d/e/1FAIpQLSe6j1bi6nDY_iaFuG0Ej_o2b51N2J4Wr3THkErUcGfKnRz0Cw/formResponse', text: 'entry.1829177881', lang: 'entry.1966403157', collection: 'entry.249293398' },
+    en: { action: 'https://docs.google.com/forms/d/e/1FAIpQLSc-Fg4Gvezc0SviRfPcHPMhU0oVgOI-cnksHGOeDjE-G0xhhQ/formResponse', text: 'entry.767568524', lang: 'entry.1922483113', collection: 'entry.2097193210' },
+    de: { action: 'https://docs.google.com/forms/d/e/1FAIpQLSc6Q2H47f7F1A9t7oNqX_GfC313wbAMtNfcaeoZWKRYbWx6Kw/formResponse', text: 'entry.1373605184', lang: 'entry.1994917952', collection: 'entry.956182207' },
+  };
+
+  submitNotFound() {
+    const { pageLang, notFoundText, notFoundLang, notFoundCollections } = this.state;
+    const cfg = this.NF_FORMS[pageLang];
+    const body = new URLSearchParams();
+    if (notFoundText) body.set(cfg.text, notFoundText);
+    if (notFoundLang) body.set(cfg.lang, notFoundLang);
+    notFoundCollections.forEach((c) => body.append(cfg.collection, c));
+    fetch(cfg.action, { method: 'POST', mode: 'no-cors', body }).catch((e) => console.error('Not-found form submit failed:', e));
+    this.setState({ notFoundSubmitted: true });
+  }
 
   async componentDidMount() {
     const { loadCatalogue } = await import('./sheet-data.js');
@@ -287,6 +362,36 @@ class Component extends DCLogic {
       selectLangGe: () => this.setState({ langFilter: 'GE' }),
       selectLangEn: () => this.setState({ langFilter: 'EN' }),
       selectLangDe: () => this.setState({ langFilter: 'DE' }),
+      notFoundSubmitted: this.state.notFoundSubmitted,
+      notFoundHidden: !this.state.notFoundSubmitted,
+      notFoundModalOpen: this.state.notFoundModalOpen,
+      openNotFound: () => this.setState({ notFoundModalOpen: true }),
+      closeNotFound: () => this.setState({ notFoundModalOpen: false }),
+      closeNotFoundBackdrop: () => this.setState({ notFoundModalOpen: false }),
+      stopPropagation: (e) => e.stopPropagation(),
+      notFoundChipStyle: `font-family:Inter;font-size:0.82rem;font-weight:600;border:1.5px dashed #1F2430;color:#1F2430;background:transparent;padding:0.4rem 0.9rem;border-radius:999px;cursor:pointer`,
+      setNotFoundText: (e) => this.setState({ notFoundText: e.target.value }),
+      submitNotFound: () => this.submitNotFound(),
+      langOptions: (T.notFoundLangOptions || []).map((label) => {
+        const active = this.state.notFoundLang === label;
+        return {
+          label,
+          style: `font-family:Inter;font-size:0.82rem;font-weight:600;border:1.5px solid ${active ? '#5D71B3' : '#DADEEC'};color:${active ? '#fff' : '#3A4256'};background:${active ? '#5D71B3' : '#F7F8FB'};padding:0.42rem 0.85rem;border-radius:999px;cursor:pointer`,
+          select: () => this.setState({ notFoundLang: label }),
+        };
+      }),
+      collectionOptions: (T.notFoundCollectionOptions || []).map((label) => {
+        const active = this.state.notFoundCollections.includes(label);
+        return {
+          label,
+          style: `font-family:Inter;font-size:0.82rem;font-weight:600;border:1.5px solid ${active ? '#5D71B3' : '#DADEEC'};color:${active ? '#fff' : '#3A4256'};background:${active ? '#5D71B3' : '#F7F8FB'};padding:0.42rem 0.85rem;border-radius:999px;cursor:pointer`,
+          toggle: () => this.setState((s) => ({
+            notFoundCollections: s.notFoundCollections.includes(label)
+              ? s.notFoundCollections.filter((c) => c !== label)
+              : [...s.notFoundCollections, label],
+          })),
+        };
+      }),
       langAllStyle: this.langPillStyle(NEUTRAL, langFilter === 'all'),
       langGeStyle: this.langPillStyle(GE_ACCENT, langFilter === 'GE'),
       langEnStyle: this.langPillStyle(EN_ACCENT, langFilter === 'EN'),
