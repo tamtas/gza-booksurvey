@@ -370,6 +370,7 @@ class Component extends DCLogic {
       closeNotFoundBackdrop: () => this.setState({ notFoundModalOpen: false }),
       stopPropagation: (e) => e.stopPropagation(),
       notFoundChipStyle: `font-family:Inter;font-size:0.82rem;font-weight:600;border:1.5px dashed #1F2430;color:#1F2430;background:transparent;padding:0.4rem 0.9rem;border-radius:999px;cursor:pointer`,
+      notFoundText: this.state.notFoundText,
       setNotFoundText: (e) => this.setState({ notFoundText: e.target.value }),
       submitNotFound: () => this.submitNotFound(),
       langOptions: (T.notFoundLangOptions || []).map((label) => {
