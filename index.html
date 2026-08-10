@@ -20,17 +20,16 @@
   </style>
 </helmet>
 
-<div style="display:flex;justify-content:center;gap:0.4rem;padding:0.6rem 1rem;background:#1F2430">
-  <button style="{{ pageLangStyle.ge }}" onClick="{{ setPageLangGe }}">GE</button>
-  <button style="{{ pageLangStyle.en }}" onClick="{{ setPageLangEn }}">EN</button>
-  <button style="{{ pageLangStyle.de }}" onClick="{{ setPageLangDe }}">DE</button>
-</div>
-
-<div style="position:relative;padding:4rem 1.5rem 3rem;text-align:center;background:radial-gradient(ellipse at top, rgba(93,113,179,0.10), transparent 60%),#F7F8FB;border-bottom:2px solid #B9C2E0;overflow:hidden">
-  <div style="font-family:'Noto Sans Georgian',serif;font-size:1.1rem;color:#5D71B3;letter-spacing:0.08em;margin-bottom:0.5rem">{{ T.eyebrow }}</div>
+<div style="position:relative;padding:2.2rem 1.5rem 3rem;text-align:center;background:radial-gradient(ellipse at top, rgba(93,113,179,0.10), transparent 60%),#F7F8FB;border-bottom:2px solid #B9C2E0;overflow:hidden">
+  <div style="font-family:'Noto Sans Georgian',serif;font-size:1.1rem;color:#5D71B3;letter-spacing:0.08em;margin-bottom:0.9rem">{{ T.eyebrow }}</div>
+  <div style="display:inline-flex;gap:0.25rem;padding:0.25rem;background:#EEF0F8;border-radius:999px;margin-bottom:1.6rem">
+    <button style="{{ pageLangStyle.ge }}" onClick="{{ setPageLangGe }}">ქართული</button>
+    <button style="{{ pageLangStyle.en }}" onClick="{{ setPageLangEn }}">English</button>
+    <button style="{{ pageLangStyle.de }}" onClick="{{ setPageLangDe }}">Deutsch</button>
+  </div>
   <h1 style="font-family:'Space Grotesk',serif;font-weight:900;font-size:clamp(2.2rem, 5.5vw, 3.8rem);margin:0.2rem 0 0.6rem;color:#1F2430">{{ T.titlePre }}<em style="color:#5D71B3;font-style:italic">{{ T.titleEm }}</em></h1>
-  <p style="max-width:640px;margin:0 auto 1.8rem;font-size:1.02rem;color:#3A4256">{{ T.heroP1 }}</p>
-  <div style="display:flex;justify-content:center;gap:4px;margin-bottom:1.8rem"><span style="width:38px;height:4px;border-radius:2px;background:#5D71B3"></span><span style="width:38px;height:4px;border-radius:2px;background:#B08A3E"></span><span style="width:38px;height:4px;border-radius:2px;background:#1F2430"></span></div>
+  <p style="max-width:640px;margin:0 auto 1.4rem;font-size:1.02rem;color:#3A4256">{{ T.heroP1 }}</p>
+  <div style="display:flex;justify-content:center;gap:4px;margin-bottom:1.8rem"><span style="width:38px;height:4px;border-radius:2px;background:#000000"></span><span style="width:38px;height:4px;border-radius:2px;background:#DD0000"></span><span style="width:38px;height:4px;border-radius:2px;background:#FFCE00"></span></div>
   <div style="display:flex;gap:2.5rem;justify-content:center;flex-wrap:wrap">
     <div style="text-align:center"><span style="font-family:'Space Grotesk',serif;font-size:2rem;font-weight:700;color:#5D71B3;display:block">{{ meta.totalBooks }}</span><span style="font-size:0.78rem;text-transform:uppercase;letter-spacing:0.06em;color:#6b7290">{{ T.statTitles }}</span></div>
     <div style="text-align:center"><span style="font-family:'Space Grotesk',serif;font-size:2rem;font-weight:700;color:#5D71B3;display:block">{{ meta.publisherCount }}</span><span style="font-size:0.78rem;text-transform:uppercase;letter-spacing:0.06em;color:#6b7290">{{ T.statPublishers }}</span></div>
@@ -72,7 +71,7 @@
       <h2 style="font-family:'Space Grotesk',serif;font-size:2.4rem;font-weight:700;margin:0 0 0.3rem;padding-left:0.7rem;border-left:5px solid {{ cluster.accent }};color:{{ cluster.accent }}">{{ cluster.catTitle }}</h2>
       <span style="margin-left:0.9rem;font-size:0.78rem;font-weight:700;color:{{ cluster.accent }};text-transform:uppercase;letter-spacing:0.06em">{{ cluster.countLabel }}</span>
     </div>
-    <div style="display:grid;grid-template-columns:repeat(auto-fill, minmax(190px,1fr));grid-auto-rows:1fr;gap:1.6rem 1.2rem;padding-bottom:0.5rem">
+    <div style="display:grid;grid-template-columns:repeat(auto-fill, minmax(190px,1fr));grid-auto-rows:auto;align-items:start;gap:2rem 1.2rem;padding-bottom:0.5rem">
       <sc-for list="{{ cluster.books }}" as="book" hint-placeholder-count="8">
         <article style="display:flex;flex-direction:column;height:100%;animation:fadeIn 0.3s ease">
           <div style="position:relative;aspect-ratio:2/3;border-radius:8px;overflow:hidden;box-shadow:0 3px 10px rgba(43,27,36,0.18)">
@@ -81,10 +80,10 @@
               <div style="display:flex;flex-direction:column;gap:0.25rem;text-align:center;padding-top:0.5rem;max-height:36%;overflow:hidden">
                 <div style="font-family:'Noto Sans Georgian',serif;font-weight:700;font-size:0.92rem;line-height:1.2;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden">{{ book.title }}</div>
                 <div style="height:1px;background:currentColor;opacity:0.3;margin:0.3rem auto 0;width:32px"></div>
-                <div style="font-size:0.64rem;font-weight:600;opacity:0.9;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ book.author }}</div>
+                <div style="font-size:0.68rem;font-weight:700;letter-spacing:0.02em;opacity:0.95;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ book.author }}</div>
               </div>
             </div>
-            <sc-if value="{{ book.hasCover }}" hint-placeholder-val="{{ true }}">
+            <sc-if value="{{ book.hasCover }}" hint-placeholder-val="{{ false }}">
               <div id="{{ book.slotId }}-bd" style="position:absolute;inset:0;z-index:2;background:{{ book.bg }}"></div>
               <img src="{{ book.coverUrl }}" alt="{{ book.title }}" onerror="this.style.display='none';var bd=document.getElementById('{{ book.slotId }}-bd');if(bd)bd.style.display='none'" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:3">
             </sc-if>
@@ -97,7 +96,7 @@
             </div>
             <div style="font-family:'Noto Sans Georgian',serif;font-weight:700;font-size:0.9rem;line-height:1.25;margin-bottom:0.3rem;color:{{ book.accent }}">{{ book.title }}</div>
             <sc-if value="{{ book.author }}" hint-placeholder-val="{{ true }}">
-              <div style="font-size:0.76rem;color:#4A5170;margin-bottom:0.4rem">{{ book.author }}</div>
+              <div style="font-size:0.8rem;font-weight:700;color:#1F2430;margin-bottom:0.4rem">{{ book.author }}</div>
             </sc-if>
             <sc-if value="{{ book.description }}" hint-placeholder-val="{{ true }}">
               <p style="font-size:0.78rem;line-height:1.4;color:#3A4256;margin:0">{{ book.description }}</p>
@@ -282,8 +281,8 @@ class Component extends DCLogic {
 
   pageLangBtnStyle(active) {
     return active
-      ? `font-family:Inter;font-size:0.72rem;font-weight:700;border:1px solid #F7F8FB;color:#1F2430;background:#F7F8FB;padding:0.25rem 0.7rem;border-radius:999px;cursor:pointer;letter-spacing:0.04em`
-      : `font-family:Inter;font-size:0.72rem;font-weight:700;border:1px solid rgba(247,248,251,0.4);color:#F7F8FB;background:transparent;padding:0.25rem 0.7rem;border-radius:999px;cursor:pointer;letter-spacing:0.04em`;
+      ? `font-family:Inter;font-size:0.84rem;font-weight:700;border:none;color:#fff;background:#5D71B3;padding:0.45rem 1.1rem;border-radius:999px;cursor:pointer;letter-spacing:0.01em;box-shadow:0 2px 8px rgba(93,113,179,0.35)`
+      : `font-family:Inter;font-size:0.84rem;font-weight:600;border:none;color:#5A6178;background:transparent;padding:0.45rem 1.1rem;border-radius:999px;cursor:pointer;letter-spacing:0.01em`;
   }
 
   renderVals() {
@@ -307,11 +306,16 @@ class Component extends DCLogic {
       .map((c) => ({ ...c, books: langFilter === 'all' ? c.books : c.books.filter((b) => b.lang === langFilter) }))
       .filter((c) => c.books.length > 0);
 
+    const pageLangCode = pageLang === 'ge' ? 'GE' : pageLang === 'de' ? 'DE' : 'EN';
     const decorated = visible.map((c) => ({
       ...c,
       catTitle: c[nameKey],
       countLabel: T.titlesCount(c.books.length),
-      books: c.books.map((b) => {
+      books: [...c.books].sort((a, b) => {
+        const am = a.lang === pageLangCode ? 0 : 1;
+        const bm = b.lang === pageLangCode ? 0 : 1;
+        return am - bm;
+      }).map((b) => {
         const voted = !!votes[b.id];
         const atLimit = !voted && loveCount >= 5;
         return {
