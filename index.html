@@ -17,6 +17,15 @@
     * { box-sizing:border-box; }
     a { color:#5D71B3; }
     a:hover { color:#4A5FA0; }
+    @media (max-width: 640px) {
+      [data-book-grid] { grid-template-columns: repeat(2, minmax(0,1fr)) !important; grid-auto-rows: auto !important; gap: 1.6rem 0.7rem !important; align-items: start !important; }
+      [data-filter-row] { flex-wrap: nowrap !important; overflow-x: auto !important; justify-content: flex-start !important; -webkit-overflow-scrolling: touch; scrollbar-width: none; scroll-padding-left: 0; }
+      [data-filter-row]::-webkit-scrollbar { display: none; }
+      [data-filter-row] button { flex-shrink: 0; }
+      [data-filter-row][data-open="false"] { display: none !important; }
+      [data-filters-toggle] { display: flex !important; }
+    }
+    [data-filters-toggle] { display: none; }
   </style>
 </helmet>
 
@@ -48,14 +57,20 @@
 </sc-if>
 
 <div style="position:sticky;top:0;z-index:20;background:rgba(247,248,251,0.96);backdrop-filter:blur(6px);border-bottom:1px solid rgba(93,113,179,0.3);padding:0.8rem 1rem;display:flex;flex-direction:column;gap:0.6rem;align-items:center">
-  <div style="display:flex;gap:0.5rem;flex-wrap:wrap;justify-content:center">
+  <div style="display:inline-flex;gap:0.15rem;padding:0.15rem;background:#EEF0F8;border-radius:999px">
+    <button style="{{ pageLangCornerStyle.ge }}" onClick="{{ setPageLangGe }}">ქართული</button>
+    <button style="{{ pageLangCornerStyle.en }}" onClick="{{ setPageLangEn }}">English</button>
+    <button style="{{ pageLangCornerStyle.de }}" onClick="{{ setPageLangDe }}">Deutsch</button>
+  </div>
+  <button data-filters-toggle="1" onClick="{{ toggleFiltersOpen }}" style="width:100%;justify-content:space-between;align-items:center;gap:0.6rem;font-family:Inter;font-size:0.86rem;font-weight:600;border:1.5px solid #DADEEC;color:#1F2430;background:#fff;padding:0.65rem 1rem;border-radius:14px;cursor:pointer;box-shadow:0 1px 4px rgba(31,36,48,0.06)"><span style="display:flex;align-items:center;gap:0.4rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"><span style="font-size:0.95rem">☰</span>{{ filtersSummary }}</span><span style="color:#8992AA;font-size:0.8rem">{{ filtersOpen ? '▲' : '▼' }}</span></button>
+  <div data-filter-row="1" data-open="{{ filtersOpenStr }}" style="display:flex;gap:0.5rem;flex-wrap:wrap;justify-content:flex-start;width:100%">
     <button style="{{ allChipStyle }}" onClick="{{ selectAll }}">{{ T.allBooks }}</button>
     <sc-for list="{{ chips }}" as="chip" hint-placeholder-count="6">
       <button style="{{ chip.style }}" onClick="{{ chip.select }}">{{ chip.title }}</button>
     </sc-for>
     <button style="{{ notFoundChipStyle }}" onClick="{{ openNotFound }}" title="{{ T.notFoundHeading }}">✎ {{ T.notFoundChipLabel }} ({{ T.notFoundSurveyTag }})</button>
   </div>
-  <div style="display:flex;gap:0.4rem;align-items:center;flex-wrap:wrap;justify-content:center">
+  <div data-filter-row="1" data-open="{{ filtersOpenStr }}" style="display:flex;gap:0.4rem;align-items:center;flex-wrap:wrap;justify-content:flex-start">
     <button style="{{ langAllStyle }}" onClick="{{ selectLangAll }}">{{ T.allLangs }}</button>
     <button style="{{ langGeStyle }}" onClick="{{ selectLangGe }}">{{ T.langGe }}</button>
     <button style="{{ langEnStyle }}" onClick="{{ selectLangEn }}">{{ T.langEn }}</button>
@@ -65,13 +80,13 @@
 </div>
 
 <sc-for list="{{ categories }}" as="cluster" hint-placeholder-count="6">
-  <section style="margin:2.4rem 0 0;padding:2.4rem 0 3rem" data-screen-label="{{ cluster.catTitle }}">
+  <section style="margin:0;padding:1.8rem 0" data-screen-label="{{ cluster.catTitle }}">
    <div style="max-width:1280px;margin:0 auto;padding:0 1.5rem">
     <div style="margin-bottom:1.6rem">
       <h2 style="font-family:'Space Grotesk',serif;font-size:2.4rem;font-weight:700;margin:0 0 0.3rem;padding-left:0.7rem;border-left:5px solid {{ cluster.accent }};color:{{ cluster.accent }}">{{ cluster.catTitle }}</h2>
       <span style="margin-left:0.9rem;font-size:0.78rem;font-weight:700;color:{{ cluster.accent }};text-transform:uppercase;letter-spacing:0.06em">{{ cluster.countLabel }}</span>
     </div>
-    <div style="display:grid;grid-template-columns:repeat(auto-fill, minmax(190px,1fr));grid-auto-rows:auto;align-items:start;gap:2rem 1.2rem;padding-bottom:0.5rem">
+    <div data-book-grid="1" style="display:grid;grid-template-columns:repeat(auto-fill, minmax(190px,1fr));grid-auto-rows:auto;align-items:start;gap:2rem 1.2rem;padding-bottom:0.5rem">
       <sc-for list="{{ cluster.books }}" as="book" hint-placeholder-count="8">
         <article style="display:flex;flex-direction:column;height:100%;animation:fadeIn 0.3s ease">
           <div style="position:relative;aspect-ratio:2/3;border-radius:8px;overflow:hidden;box-shadow:0 3px 10px rgba(43,27,36,0.18)">
@@ -190,6 +205,7 @@ class Component extends DCLogic {
     notFoundCollections: [],
     notFoundSubmitted: false,
     notFoundModalOpen: false,
+    filtersOpen: false,
   };
 
   // Each language has its own Google Form; field IDs come from that form's own definition.
@@ -285,6 +301,12 @@ class Component extends DCLogic {
       : `font-family:Inter;font-size:0.84rem;font-weight:600;border:none;color:#5A6178;background:transparent;padding:0.45rem 1.1rem;border-radius:999px;cursor:pointer;letter-spacing:0.01em`;
   }
 
+  pageLangCornerStyle(active) {
+    return active
+      ? `font-family:Inter;font-size:0.72rem;font-weight:700;border:none;color:#fff;background:#5D71B3;padding:0.32rem 0.6rem;border-radius:999px;cursor:pointer`
+      : `font-family:Inter;font-size:0.72rem;font-weight:600;border:none;color:#5A6178;background:transparent;padding:0.32rem 0.6rem;border-radius:999px;cursor:pointer`;
+  }
+
   renderVals() {
     const { pageLang, filter, langFilter, categories, meta, loading, loadError, votes, toastVisible, toastMsg } = this.state;
     // ensure i18n module is available synchronously for render once loaded
@@ -303,7 +325,7 @@ class Component extends DCLogic {
 
     const byCategory = filter === 'all' ? categories : categories.filter((c) => c.id === filter);
     const visible = byCategory
-      .map((c) => ({ ...c, books: langFilter === 'all' ? c.books : c.books.filter((b) => b.lang === langFilter) }))
+      .map((c) => ({ ...c, books: langFilter === 'all' ? c.books : c.books.filter((b) => (b.langs || [b.lang]).includes(langFilter)) }))
       .filter((c) => c.books.length > 0);
 
     const pageLangCode = pageLang === 'ge' ? 'GE' : pageLang === 'de' ? 'DE' : 'EN';
@@ -312,15 +334,20 @@ class Component extends DCLogic {
       catTitle: c[nameKey],
       countLabel: T.titlesCount(c.books.length),
       books: [...c.books].sort((a, b) => {
-        const am = a.lang === pageLangCode ? 0 : 1;
-        const bm = b.lang === pageLangCode ? 0 : 1;
-        return am - bm;
+        const am = (a.langs || [a.lang]).includes(pageLangCode) ? 0 : 1;
+        const bm = (b.langs || [b.lang]).includes(pageLangCode) ? 0 : 1;
+        if (am !== bm) return am - bm;
+        // manual pin: keep Yoko Ogawa's title last within its section regardless of language match
+        const aPinned = (a.author || '').includes('ოგავა') ? 1 : 0;
+        const bPinned = (b.author || '').includes('ოგავა') ? 1 : 0;
+        return aPinned - bPinned;
       }).map((b) => {
         const voted = !!votes[b.id];
         const atLimit = !voted && loveCount >= 5;
         return {
           ...b,
           hasCover: !!b.coverUrl,
+          lang: (b.langs || [b.lang]).join(' · '),
           langChipStyle: `font-size:0.68rem;font-weight:700;padding:0.12rem 0.5rem;border-radius:5px;letter-spacing:0.03em;background:${b.accent}1A;color:${b.accent}`,
           toggleVote: () => this.toggleVote(b),
           voteIcon: voted ? '♥' : '♡',
@@ -359,6 +386,11 @@ class Component extends DCLogic {
         ge: this.pageLangBtnStyle(pageLang === 'ge'),
         en: this.pageLangBtnStyle(pageLang === 'en'),
         de: this.pageLangBtnStyle(pageLang === 'de'),
+      },
+      pageLangCornerStyle: {
+        ge: this.pageLangCornerStyle(pageLang === 'ge'),
+        en: this.pageLangCornerStyle(pageLang === 'en'),
+        de: this.pageLangCornerStyle(pageLang === 'de'),
       },
       selectAll: () => this.setState({ filter: 'all' }),
       allChipStyle: this.chipStyleFor(NEUTRAL, filter === 'all'),
@@ -401,6 +433,10 @@ class Component extends DCLogic {
       langGeStyle: this.langPillStyle(GE_ACCENT, langFilter === 'GE'),
       langEnStyle: this.langPillStyle(EN_ACCENT, langFilter === 'EN'),
       langDeStyle: this.langPillStyle(DE_ACCENT, langFilter === 'DE'),
+      filtersOpen: this.state.filtersOpen,
+      filtersOpenStr: this.state.filtersOpen ? 'true' : 'false',
+      toggleFiltersOpen: () => this.setState((s) => ({ filtersOpen: !s.filtersOpen })),
+      filtersSummary: (filter === 'all' ? T.allBooks : chips.find((c) => c.id === filter)?.title || T.allBooks) + '  ·  ' + (langFilter === 'all' ? T.allLangs : langFilter === 'GE' ? T.langGe : langFilter === 'EN' ? T.langEn : T.langDe),
     };
   }
 }
