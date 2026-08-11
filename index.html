@@ -19,7 +19,7 @@
     a:hover { color:#4A5FA0; }
     @media (max-width: 640px) {
       [data-book-grid] { grid-template-columns: repeat(2, minmax(0,1fr)) !important; grid-auto-rows: auto !important; gap: 1.6rem 0.7rem !important; align-items: start !important; }
-      [data-filter-row] { flex-wrap: nowrap !important; overflow-x: auto !important; justify-content: flex-start !important; -webkit-overflow-scrolling: touch; scrollbar-width: none; scroll-padding-left: 0; }
+      [data-filter-row] { flex-wrap: nowrap !important; overflow-x: auto !important; justify-content: flex-start !important; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
       [data-filter-row]::-webkit-scrollbar { display: none; }
       [data-filter-row] button { flex-shrink: 0; }
       [data-filter-row][data-open="false"] { display: none !important; }
@@ -63,14 +63,14 @@
     <button style="{{ pageLangCornerStyle.de }}" onClick="{{ setPageLangDe }}">Deutsch</button>
   </div>
   <button data-filters-toggle="1" onClick="{{ toggleFiltersOpen }}" style="width:100%;justify-content:space-between;align-items:center;gap:0.6rem;font-family:Inter;font-size:0.86rem;font-weight:600;border:1.5px solid #DADEEC;color:#1F2430;background:#fff;padding:0.65rem 1rem;border-radius:14px;cursor:pointer;box-shadow:0 1px 4px rgba(31,36,48,0.06)"><span style="display:flex;align-items:center;gap:0.4rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"><span style="font-size:0.95rem">☰</span>{{ filtersSummary }}</span><span style="color:#8992AA;font-size:0.8rem">{{ filtersOpen ? '▲' : '▼' }}</span></button>
-  <div data-filter-row="1" data-open="{{ filtersOpenStr }}" style="display:flex;gap:0.5rem;flex-wrap:wrap;justify-content:flex-start;width:100%">
+  <div data-filter-row="1" data-open="{{ filtersOpenStr }}" style="display:flex;gap:0.5rem;flex-wrap:wrap;justify-content:center;width:100%">
     <button style="{{ allChipStyle }}" onClick="{{ selectAll }}">{{ T.allBooks }}</button>
     <sc-for list="{{ chips }}" as="chip" hint-placeholder-count="6">
       <button style="{{ chip.style }}" onClick="{{ chip.select }}">{{ chip.title }}</button>
     </sc-for>
     <button style="{{ notFoundChipStyle }}" onClick="{{ openNotFound }}" title="{{ T.notFoundHeading }}">✎ {{ T.notFoundChipLabel }} ({{ T.notFoundSurveyTag }})</button>
   </div>
-  <div data-filter-row="1" data-open="{{ filtersOpenStr }}" style="display:flex;gap:0.4rem;align-items:center;flex-wrap:wrap;justify-content:flex-start">
+  <div data-filter-row="1" data-open="{{ filtersOpenStr }}" style="display:flex;gap:0.4rem;align-items:center;flex-wrap:wrap;justify-content:center">
     <button style="{{ langAllStyle }}" onClick="{{ selectLangAll }}">{{ T.allLangs }}</button>
     <button style="{{ langGeStyle }}" onClick="{{ selectLangGe }}">{{ T.langGe }}</button>
     <button style="{{ langEnStyle }}" onClick="{{ selectLangEn }}">{{ T.langEn }}</button>
@@ -80,7 +80,7 @@
 </div>
 
 <sc-for list="{{ categories }}" as="cluster" hint-placeholder-count="6">
-  <section style="margin:0;padding:1.8rem 0" data-screen-label="{{ cluster.catTitle }}">
+  <section style="margin:2.4rem 0 0;padding:2.4rem 0 3rem" data-screen-label="{{ cluster.catTitle }}">
    <div style="max-width:1280px;margin:0 auto;padding:0 1.5rem">
     <div style="margin-bottom:1.6rem">
       <h2 style="font-family:'Space Grotesk',serif;font-size:2.4rem;font-weight:700;margin:0 0 0.3rem;padding-left:0.7rem;border-left:5px solid {{ cluster.accent }};color:{{ cluster.accent }}">{{ cluster.catTitle }}</h2>
@@ -325,7 +325,7 @@ class Component extends DCLogic {
 
     const byCategory = filter === 'all' ? categories : categories.filter((c) => c.id === filter);
     const visible = byCategory
-      .map((c) => ({ ...c, books: langFilter === 'all' ? c.books : c.books.filter((b) => (b.langs || [b.lang]).includes(langFilter)) }))
+      .map((c) => ({ ...c, books: langFilter === 'all' ? c.books : c.books.filter((b) => b.lang === langFilter) }))
       .filter((c) => c.books.length > 0);
 
     const pageLangCode = pageLang === 'ge' ? 'GE' : pageLang === 'de' ? 'DE' : 'EN';
@@ -334,20 +334,15 @@ class Component extends DCLogic {
       catTitle: c[nameKey],
       countLabel: T.titlesCount(c.books.length),
       books: [...c.books].sort((a, b) => {
-        const am = (a.langs || [a.lang]).includes(pageLangCode) ? 0 : 1;
-        const bm = (b.langs || [b.lang]).includes(pageLangCode) ? 0 : 1;
-        if (am !== bm) return am - bm;
-        // manual pin: keep Yoko Ogawa's title last within its section regardless of language match
-        const aPinned = (a.author || '').includes('ოგავა') ? 1 : 0;
-        const bPinned = (b.author || '').includes('ოგავა') ? 1 : 0;
-        return aPinned - bPinned;
+        const am = a.lang === pageLangCode ? 0 : 1;
+        const bm = b.lang === pageLangCode ? 0 : 1;
+        return am - bm;
       }).map((b) => {
         const voted = !!votes[b.id];
         const atLimit = !voted && loveCount >= 5;
         return {
           ...b,
           hasCover: !!b.coverUrl,
-          lang: (b.langs || [b.lang]).join(' · '),
           langChipStyle: `font-size:0.68rem;font-weight:700;padding:0.12rem 0.5rem;border-radius:5px;letter-spacing:0.03em;background:${b.accent}1A;color:${b.accent}`,
           toggleVote: () => this.toggleVote(b),
           voteIcon: voted ? '♥' : '♡',
