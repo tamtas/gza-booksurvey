@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+
+<helmet>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Georgian:wght@400;500;600;700;800&amp;family=Space+Grotesk:wght@500;600;700&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+  <style>
+    @keyframes fadeIn { from { opacity:0 } to { opacity:1 } }
+    body { margin:0; background:#F7F8FB; color:#1F2430; font-family:'Inter',sans-serif; line-height:1.5; }
+    * { box-sizing:border-box; }
+    a { color:#5D71B3; }
+    a:hover { color:#4A5FA0; }
+    @media (max-width: 640px) {
+      [data-book-grid] { grid-template-columns: repeat(2, minmax(0,1fr)) !important; grid-auto-rows: auto !important; gap: 1.6rem 0.7rem !important; align-items: start !important; }
+      [data-filter-row] { flex-wrap: nowrap !important; overflow-x: auto !important; justify-content: flex-start !important; -webkit-overflow-scrolling: touch; scrollbar-width: none; scroll-padding-left: 0; }
+      [data-filter-row]::-webkit-scrollbar { display: none; }
+      [data-filter-row] button { flex-shrink: 0; }
+      [data-filter-row][data-open="false"] { display: none !important; }
+      [data-filters-toggle] { display: flex !important; }
+    }
+    [data-filters-toggle] { display: none; }
+    @media (min-width: 641px) {
+      [data-filter-row] { justify-content: center !important; }
+    }
+  </style>
+</helmet>
+
+<div style="position:relative;padding:2.2rem 1.5rem 3rem;text-align:center;background:radial-gradient(ellipse at top, rgba(93,113,179,0.10), transparent 60%),#F7F8FB;border-bottom:2px solid #B9C2E0;overflow:hidden">
+  <div style="font-family:'Noto Sans Georgian',serif;font-size:1.1rem;color:#5D71B3;letter-spacing:0.08em;margin-bottom:0.9rem">{{ T.eyebrow }}</div>
+  <div style="display:inline-flex;gap:0.25rem;padding:0.25rem;background:#EEF0F8;border-radius:999px;margin-bottom:1.6rem">
+    <button style="{{ pageLangStyle.ge }}" onClick="{{ setPageLangGe }}">ქართული</button>
+    <button style="{{ pageLangStyle.en }}" onClick="{{ setPageLangEn }}">English</button>
+    <button style="{{ pageLangStyle.de }}" onClick="{{ setPageLangDe }}">Deutsch</button>
+  </div>
+  <h1 style="font-family:'Space Grotesk',serif;font-weight:900;font-size:clamp(2.2rem, 5.5vw, 3.8rem);margin:0.2rem 0 0.6rem;color:#1F2430">{{ T.titlePre }}<em style="color:#5D71B3;font-style:italic">{{ T.titleEm }}</em></h1>
+  <p style="max-width:640px;margin:0 auto 1.4rem;font-size:1.02rem;color:#3A4256">{{ T.heroP1 }}</p>
+  <div style="display:flex;justify-content:center;gap:4px;margin-bottom:1.8rem"><span style="width:38px;height:4px;border-radius:2px;background:#000000"></span><span style="width:38px;height:4px;border-radius:2px;background:#DD0000"></span><span style="width:38px;height:4px;border-radius:2px;background:#FFCE00"></span></div>
+  <div style="display:flex;gap:2.5rem;justify-content:center;flex-wrap:wrap">
+    <div style="text-align:center"><span style="font-family:'Space Grotesk',serif;font-size:2rem;font-weight:700;color:#5D71B3;display:block">{{ meta.totalBooks }}</span><span style="font-size:0.78rem;text-transform:uppercase;letter-spacing:0.06em;color:#6b7290">{{ T.statTitles }}</span></div>
+    <div style="text-align:center"><span style="font-family:'Space Grotesk',serif;font-size:2rem;font-weight:700;color:#5D71B3;display:block">{{ meta.publisherCount }}</span><span style="font-size:0.78rem;text-transform:uppercase;letter-spacing:0.06em;color:#6b7290">{{ T.statPublishers }}</span></div>
+    <div style="text-align:center"><span style="font-family:'Space Grotesk',serif;font-size:2rem;font-weight:700;color:#5D71B3;display:block">{{ meta.categoryCount }}</span><span style="font-size:0.78rem;text-transform:uppercase;letter-spacing:0.06em;color:#6b7290">{{ T.statCategories }}</span></div>
+  </div>
+</div>
+
+<sc-if value="{{ loading }}" hint-placeholder-val="{{ false }}">
+  <div style="text-align:center;padding:3rem 1rem;color:#6b7290;font-size:0.95rem">{{ T.loading }}</div>
+</sc-if>
+
+<sc-if value="{{ ready }}" hint-placeholder-val="{{ false }}">
+<div>
+<sc-if value="{{ loadError }}" hint-placeholder-val="{{ false }}">
+  <div style="max-width:900px;margin:0 auto;padding:0.6rem 1rem;text-align:center;color:#8A5A2A;background:#FBEFD8;border-radius:8px;font-size:0.82rem;display:flex;gap:0.6rem;align-items:center;justify-content:center;flex-wrap:wrap">{{ T.loadError }}<button onClick="{{ retryLoad }}" style="border:1px solid #8A5A2A;color:#8A5A2A;background:transparent;padding:0.25rem 0.7rem;border-radius:999px;font-size:0.78rem;cursor:pointer">↻</button></div>
+</sc-if>
+
+<div style="position:sticky;top:0;z-index:20;background:rgba(247,248,251,0.96);backdrop-filter:blur(6px);border-bottom:1px solid rgba(93,113,179,0.3);padding:0.8rem 1rem;display:flex;flex-direction:column;gap:0.6rem;align-items:center">
+  <div style="display:inline-flex;gap:0.15rem;padding:0.15rem;background:#EEF0F8;border-radius:999px">
+    <button style="{{ pageLangCornerStyle.ge }}" onClick="{{ setPageLangGe }}">ქართული</button>
+    <button style="{{ pageLangCornerStyle.en }}" onClick="{{ setPageLangEn }}">English</button>
+    <button style="{{ pageLangCornerStyle.de }}" onClick="{{ setPageLangDe }}">Deutsch</button>
+  </div>
+  <button data-filters-toggle="1" onClick="{{ toggleFiltersOpen }}" style="width:100%;justify-content:space-between;align-items:center;gap:0.6rem;font-family:Inter;font-size:0.86rem;font-weight:600;border:1.5px solid #DADEEC;color:#1F2430;background:#fff;padding:0.65rem 1rem;border-radius:14px;cursor:pointer;box-shadow:0 1px 4px rgba(31,36,48,0.06)"><span style="display:flex;align-items:center;gap:0.4rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"><span style="font-size:0.95rem">☰</span>{{ filtersSummary }}</span><span style="color:#8992AA;font-size:0.8rem">{{ filtersOpen ? '▲' : '▼' }}</span></button>
+  <div data-filter-row="1" data-open="{{ filtersOpenStr }}" style="display:flex;gap:0.5rem;flex-wrap:wrap;justify-content:flex-start;width:100%">
+    <button style="{{ allChipStyle }}" onClick="{{ selectAll }}">{{ T.allBooks }}</button>
+    <sc-for list="{{ chips }}" as="chip" hint-placeholder-count="6">
+      <button style="{{ chip.style }}" onClick="{{ chip.select }}">{{ chip.title }}</button>
+    </sc-for>
+    <button style="{{ notFoundChipStyle }}" onClick="{{ openNotFound }}" title="{{ T.notFoundHeading }}">✎ {{ T.notFoundChipLabel }} ({{ T.notFoundSurveyTag }})</button>
+  </div>
+  <div data-filter-row="1" data-open="{{ filtersOpenStr }}" style="display:flex;gap:0.4rem;align-items:center;flex-wrap:wrap;justify-content:flex-start;width:100%">
+    <button style="{{ langAllStyle }}" onClick="{{ selectLangAll }}">{{ T.allLangs }}</button>
+    <button style="{{ langGeStyle }}" onClick="{{ selectLangGe }}">{{ T.langGe }}</button>
+    <button style="{{ langEnStyle }}" onClick="{{ selectLangEn }}">{{ T.langEn }}</button>
+    <button style="{{ langDeStyle }}" onClick="{{ selectLangDe }}">{{ T.langDe }}</button>
+    <span style="margin-left:0.6rem;font-size:0.78rem;font-weight:700;color:#5D71B3;background:#E4E8F5;padding:0.32rem 0.7rem;border-radius:999px">♥ {{ loveCount }}/5</span>
+  </div>
+</div>
+
+<sc-for list="{{ categories }}" as="cluster" hint-placeholder-count="6">
+  <section style="margin:0;padding:1.8rem 0" data-screen-label="{{ cluster.catTitle }}">
+   <div style="max-width:1280px;margin:0 auto;padding:0 1.5rem">
+    <div style="margin-bottom:1.6rem">
+      <h2 style="font-family:'Space Grotesk',serif;font-size:2.4rem;font-weight:700;margin:0 0 0.3rem;padding-left:0.7rem;border-left:5px solid {{ cluster.accent }};color:{{ cluster.accent }}">{{ cluster.catTitle }}</h2>
+      <span style="margin-left:0.9rem;font-size:0.78rem;font-weight:700;color:{{ cluster.accent }};text-transform:uppercase;letter-spacing:0.06em">{{ cluster.countLabel }}</span>
+    </div>
+    <div data-book-grid="1" style="display:grid;grid-template-columns:repeat(auto-fill, minmax(190px,1fr));grid-auto-rows:auto;align-items:start;gap:2rem 1.2rem;padding-bottom:0.5rem">
+      <sc-for list="{{ cluster.books }}" as="book" hint-placeholder-count="8">
+        <article style="display:flex;flex-direction:column;height:100%;animation:fadeIn 0.3s ease">
+          <div style="position:relative;aspect-ratio:2/3;border-radius:8px;overflow:hidden;box-shadow:0 3px 10px rgba(43,27,36,0.18)">
+            <div style="position:absolute;inset:0;display:flex;flex-direction:column;padding:0.9rem 0.8rem;background:{{ book.bg }};color:{{ book.textColor }};z-index:1">
+              <div style="font-size:0.62rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;opacity:0.75">{{ book.publisher }}</div>
+              <div style="display:flex;flex-direction:column;gap:0.25rem;text-align:center;padding-top:0.5rem;max-height:36%;overflow:hidden">
+                <div style="font-family:'Noto Sans Georgian',serif;font-weight:700;font-size:0.92rem;line-height:1.2;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden">{{ book.title }}</div>
+                <div style="height:1px;background:currentColor;opacity:0.3;margin:0.3rem auto 0;width:32px"></div>
+                <div style="font-size:0.68rem;font-weight:700;letter-spacing:0.02em;opacity:0.95;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ book.author }}</div>
+              </div>
+            </div>
+            <sc-if value="{{ book.hasCover }}" hint-placeholder-val="{{ false }}">
+              <div id="{{ book.slotId }}-bd" style="position:absolute;inset:0;z-index:2;background:{{ book.bg }}"></div>
+              <img src="{{ book.coverUrl }}" alt="{{ book.title }}" onerror="this.style.display='none';var bd=document.getElementById('{{ book.slotId }}-bd');if(bd)bd.style.display='none'" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:3">
+            </sc-if>
+          </div>
+          <button onClick="{{ book.toggleVote }}" style="{{ book.voteBtnStyle }}"><span style="font-size:1.15rem;line-height:1">{{ book.voteIcon }}</span>{{ book.voteLabel }}</button>
+          <div style="padding:0.55rem 0.15rem 0 ">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.3rem">
+              <span style="{{ book.langChipStyle }}">{{ book.lang }}</span>
+              <span style="font-size:0.74rem;font-weight:700;color:{{ book.accent }};text-transform:uppercase;letter-spacing:0.04em">{{ book.publisher }}</span>
+            </div>
+            <div style="font-family:'Noto Sans Georgian',serif;font-weight:700;font-size:0.9rem;line-height:1.25;margin-bottom:0.3rem;color:{{ book.accent }}">{{ book.title }}</div>
+            <sc-if value="{{ book.author }}" hint-placeholder-val="{{ true }}">
+              <div style="font-size:0.8rem;font-weight:700;color:#1F2430;margin-bottom:0.4rem">{{ book.author }}</div>
+            </sc-if>
+            <sc-if value="{{ book.description }}" hint-placeholder-val="{{ true }}">
+              <p style="font-size:0.78rem;line-height:1.4;color:#3A4256;margin:0">{{ book.description }}</p>
+            </sc-if>
+          </div>
+        </article>
+      </sc-for>
+    </div>
+   </div>
+  </section>
+</sc-for>
+
+<section style="max-width:1280px;margin:0 auto;padding:0 1.5rem 3rem">
+  <div style="max-width:220px">
+    <article style="display:flex;flex-direction:column;height:100%;cursor:pointer" onClick="{{ openNotFound }}">
+      <div style="position:relative;aspect-ratio:2/3;border-radius:8px;overflow:hidden;box-shadow:0 3px 10px rgba(43,27,36,0.18);background:linear-gradient(160deg,#1F2430,#3A4470);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1.2rem;text-align:center;color:#F7F8FB">
+        <div style="font-size:2.2rem;line-height:1;margin-bottom:0.6rem">＋</div>
+        <div style="font-family:'Noto Sans Georgian',serif;font-weight:700;font-size:0.95rem;line-height:1.3">{{ T.notFoundHeading }}</div>
+      </div>
+      <div style="padding:0.55rem 0.15rem 0;font-size:0.78rem;color:#4A5170;text-align:center">{{ T.notFoundSub }}</div>
+    </article>
+  </div>
+</section>
+</div>
+</sc-if>
+
+<sc-if value="{{ toastVisible }}" hint-placeholder-val="{{ false }}">
+  <div style="position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);background:#1F2430;color:#F7F8FB;padding:0.7rem 1.3rem;border-radius:999px;font-size:0.85rem;font-family:'Inter',sans-serif;box-shadow:0 6px 20px rgba(0,0,0,0.25);z-index:100;max-width:90vw;text-align:center">{{ toastMsg }}</div>
+</sc-if>
+
+<sc-if value="{{ notFoundModalOpen }}" hint-placeholder-val="{{ false }}">
+  <div style="position:fixed;inset:0;background:rgba(20,23,32,0.6);backdrop-filter:blur(4px);z-index:200;display:flex;align-items:center;justify-content:center;padding:1.2rem;animation:fadeIn 0.18s ease" onClick="{{ closeNotFoundBackdrop }}">
+    <div style="background:#FFFFFF;border-radius:22px;padding:2.2rem 2rem;max-width:540px;width:100%;max-height:88vh;overflow-y:auto;position:relative;box-shadow:0 30px 70px rgba(15,17,25,0.35);border:1px solid rgba(255,255,255,0.6)" onClick="{{ stopPropagation }}">
+      <button onClick="{{ closeNotFound }}" style="position:absolute;top:1.1rem;right:1.1rem;width:32px;height:32px;border-radius:50%;background:#F1F2F7;border:none;font-size:1.1rem;color:#5A6178;cursor:pointer;line-height:1;display:flex;align-items:center;justify-content:center" style-hover="background:#E4E6F0;color:#1F2430">×</button>
+      <div style="display:inline-block;font-size:0.68rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#5D71B3;background:#5D71B31A;padding:0.28rem 0.7rem;border-radius:999px;margin-bottom:0.8rem">{{ T.notFoundSurveyTag }}</div>
+      <h3 style="font-family:'Space Grotesk',serif;font-size:1.55rem;font-weight:700;margin:0 0 0.5rem;color:#1F2430;letter-spacing:-0.01em">{{ T.notFoundHeading }}</h3>
+      <p style="font-size:0.92rem;color:#5A6178;margin:0 0 1.6rem;line-height:1.5">{{ T.notFoundSub }}</p>
+      <sc-if value="{{ notFoundSubmitted }}" hint-placeholder-val="{{ false }}">
+        <div style="padding:1.1rem;border-radius:14px;background:#E8F3E6;color:#2E5B3C;font-size:0.92rem;text-align:center;font-weight:600">{{ T.notFoundThanks }}</div>
+      </sc-if>
+      <sc-if value="{{ notFoundHidden }}" hint-placeholder-val="{{ true }}">
+      <div style="display:flex;flex-direction:column;gap:1.5rem">
+        <div>
+          <label style="display:block;font-size:0.76rem;font-weight:700;letter-spacing:0.03em;text-transform:uppercase;color:#8992AA;margin-bottom:0.55rem">{{ T.notFoundTextLabel }}</label>
+          <textarea value="{{ notFoundText }}" onChange="{{ setNotFoundText }}" placeholder="{{ T.notFoundTextPlaceholder }}" style="width:100%;min-height:76px;border:1.5px solid #E4E6F0;background:#F7F8FB;border-radius:12px;padding:0.7rem 0.8rem;font-family:'Inter',sans-serif;font-size:0.9rem;resize:vertical;outline:none;box-sizing:border-box" style-focus="border-color:#5D71B3;background:#FFFFFF"></textarea>
+        </div>
+        <div>
+          <label style="display:block;font-size:0.76rem;font-weight:700;letter-spacing:0.03em;text-transform:uppercase;color:#8992AA;margin-bottom:0.6rem">{{ T.notFoundLangLabel }}</label>
+          <div style="display:flex;gap:0.5rem;flex-wrap:wrap">
+            <sc-for list="{{ langOptions }}" as="opt" hint-placeholder-count="4">
+              <button onClick="{{ opt.select }}" style="{{ opt.style }}">{{ opt.label }}</button>
+            </sc-for>
+          </div>
+        </div>
+        <div>
+          <label style="display:block;font-size:0.76rem;font-weight:700;letter-spacing:0.03em;text-transform:uppercase;color:#8992AA;margin-bottom:0.6rem">{{ T.notFoundCollectionLabel }}</label>
+          <div style="display:flex;gap:0.5rem;flex-wrap:wrap">
+            <sc-for list="{{ collectionOptions }}" as="opt" hint-placeholder-count="6">
+              <button onClick="{{ opt.toggle }}" style="{{ opt.style }}">{{ opt.label }}</button>
+            </sc-for>
+          </div>
+        </div>
+        <button onClick="{{ submitNotFound }}" style="margin-top:0.3rem;background:#1F2430;color:#F7F8FB;border:none;border-radius:12px;padding:0.75rem 1.4rem;font-size:0.92rem;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;width:100%" style-hover="background:#343B52">{{ T.notFoundSubmit }}</button>
+      </div>
+      </sc-if>
+    </div>
+  </div>
+</sc-if>
+
+<footer style="text-align:center;padding:3rem 1.5rem 4rem;color:#8992AA;font-size:0.85rem">
+  <div style="font-family:'Noto Sans Georgian',serif;font-size:1rem;margin-bottom:0.3rem;color:#5D71B3">{{ T.footerThanks }}</div>
+  <div>{{ T.footerLine }}</div>
+</footer>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = {
+    pageLang: 'ge',
+    filter: 'all',
+    langFilter: 'all',
+    categories: [],
+    meta: { totalBooks: 0, publisherCount: 0, categoryCount: 0 },
+    loading: true,
+    loadError: false,
+    votes: {},
+    toastVisible: false,
+    toastMsg: '',
+    notFoundText: '',
+    notFoundLang: '',
+    notFoundCollections: [],
+    notFoundSubmitted: false,
+    notFoundModalOpen: false,
+    filtersOpen: false,
+  };
+
+  // Each language has its own Google Form; field IDs come from that form's own definition.
+  NF_FORMS = {
+    ge: { action: 'https://docs.google.com/forms/d/e/1FAIpQLSe6j1bi6nDY_iaFuG0Ej_o2b51N2J4Wr3THkErUcGfKnRz0Cw/formResponse', text: 'entry.1829177881', lang: 'entry.1966403157', collection: 'entry.249293398' },
+    en: { action: 'https://docs.google.com/forms/d/e/1FAIpQLSc-Fg4Gvezc0SviRfPcHPMhU0oVgOI-cnksHGOeDjE-G0xhhQ/formResponse', text: 'entry.767568524', lang: 'entry.1922483113', collection: 'entry.2097193210' },
+    de: { action: 'https://docs.google.com/forms/d/e/1FAIpQLSc6Q2H47f7F1A9t7oNqX_GfC313wbAMtNfcaeoZWKRYbWx6Kw/formResponse', text: 'entry.1373605184', lang: 'entry.1994917952', collection: 'entry.956182207' },
+  };
+
+  submitNotFound() {
+    const { pageLang, notFoundText, notFoundLang, notFoundCollections } = this.state;
+    const cfg = this.NF_FORMS[pageLang];
+    const body = new URLSearchParams();
+    if (notFoundText) body.set(cfg.text, notFoundText);
+    if (notFoundLang) body.set(cfg.lang, notFoundLang);
+    notFoundCollections.forEach((c) => body.append(cfg.collection, c));
+    fetch(cfg.action, { method: 'POST', mode: 'no-cors', body }).catch((e) => console.error('Not-found form submit failed:', e));
+    this.setState({ notFoundSubmitted: true });
+  }
+
+  async componentDidMount() {
+    const { loadCatalogue } = await import('./sheet-data.js');
+    let votes = {};
+    try { votes = JSON.parse(localStorage.getItem('gbf-votes-v3') || '{}'); } catch (e) {}
+    try {
+      const data = await loadCatalogue();
+      this.setState({
+        categories: data.categories,
+        meta: { totalBooks: data.totalBooks, publisherCount: data.publisherCount, categoryCount: data.categories.length },
+        loading: false,
+        loadError: false,
+        votes,
+      });
+    } catch (err) {
+      console.error('Live sheet load failed:', err);
+      this.setState({ loading: false, loadError: true, votes });
+    }
+  }
+
+  retryLoad() {
+    this.setState({ loading: true, loadError: false });
+    this.componentDidMount();
+  }
+
+  async i18n() {
+    if (!this._i18n) this._i18n = await import('./i18n.js');
+    return this._i18n;
+  }
+
+  submitVoteToForm(bookId, action) {
+    const FORM_ACTION = 'https://docs.google.com/forms/d/e/1FAIpQLSdx8UvfZeez9EumAZ21is-w1pAQElvUb9QmMJY8lMpTfSlhow/formResponse';
+    const ENTRY_ID = 'entry.272780057';
+    const ENTRY_ACTION = 'entry.1082019048';
+    const body = new URLSearchParams();
+    body.set(ENTRY_ID, bookId);
+    body.set(ENTRY_ACTION, action);
+    fetch(FORM_ACTION, { method: 'POST', mode: 'no-cors', body }).catch((e) => console.error('Form submit failed:', e));
+  }
+
+  toggleVote(book) {
+    clearTimeout(this._toastTimer);
+    const T = (this._i18n || {}).I18N ? this._i18n.I18N[this.state.pageLang] : null;
+    this.setState((s) => {
+      const t = this._i18n.I18N[s.pageLang];
+      const isOn = !!s.votes[book.id];
+      const activeCount = Object.values(s.votes).filter(Boolean).length;
+      if (!isOn && activeCount >= 5) {
+        return { toastVisible: true, toastMsg: t.limitReached };
+      }
+      const votes = { ...s.votes, [book.id]: !isOn };
+      localStorage.setItem('gbf-votes-v3', JSON.stringify(votes));
+      this.submitVoteToForm(book.id, !isOn ? 'Add' : 'Remove');
+      return { votes, toastVisible: true, toastMsg: !isOn ? t.voteAdded : t.voteRemoved };
+    });
+    this._toastTimer = setTimeout(() => this.setState({ toastVisible: false }), 2400);
+  }
+
+  chipStyleFor(accent, active) {
+    return active
+      ? `font-family:Inter;font-size:0.82rem;font-weight:600;border:1.5px solid ${accent};color:#fff;background:${accent};padding:0.4rem 0.9rem;border-radius:999px;cursor:pointer`
+      : `font-family:Inter;font-size:0.82rem;font-weight:600;border:1.5px solid ${accent};color:${accent};background:transparent;padding:0.4rem 0.9rem;border-radius:999px;cursor:pointer`;
+  }
+
+  langPillStyle(accent, active) {
+    return active
+      ? `font-family:Inter;font-size:0.76rem;font-weight:700;border:1.5px solid ${accent};color:#fff;background:${accent};padding:0.32rem 0.8rem;border-radius:999px;cursor:pointer`
+      : `font-family:Inter;font-size:0.76rem;font-weight:600;border:1.5px solid ${accent};color:${accent};background:transparent;padding:0.32rem 0.8rem;border-radius:999px;cursor:pointer`;
+  }
+
+  pageLangBtnStyle(active) {
+    return active
+      ? `font-family:Inter;font-size:0.84rem;font-weight:700;border:none;color:#fff;background:#5D71B3;padding:0.45rem 1.1rem;border-radius:999px;cursor:pointer;letter-spacing:0.01em;box-shadow:0 2px 8px rgba(93,113,179,0.35)`
+      : `font-family:Inter;font-size:0.84rem;font-weight:600;border:none;color:#5A6178;background:transparent;padding:0.45rem 1.1rem;border-radius:999px;cursor:pointer;letter-spacing:0.01em`;
+  }
+
+  pageLangCornerStyle(active) {
+    return active
+      ? `font-family:Inter;font-size:0.72rem;font-weight:700;border:none;color:#fff;background:#5D71B3;padding:0.32rem 0.6rem;border-radius:999px;cursor:pointer`
+      : `font-family:Inter;font-size:0.72rem;font-weight:600;border:none;color:#5A6178;background:transparent;padding:0.32rem 0.6rem;border-radius:999px;cursor:pointer`;
+  }
+
+  renderVals() {
+    const { pageLang, filter, langFilter, categories, meta, loading, loadError, votes, toastVisible, toastMsg } = this.state;
+    // ensure i18n module is available synchronously for render once loaded
+    if (this._i18nSync === undefined) {
+      this._i18nSync = null;
+      this.i18n().then((m) => { this._i18n = m; this.forceUpdate(); });
+    }
+    const mod = this._i18n;
+    const FALLBACK_T = { eyebrow: '', titlePre: '', titleEm: '', heroP1: '', statTitles: '', statPublishers: '', statCategories: '', allBooks: '', allLangs: '', langGe: 'GE', langEn: 'EN', langDe: 'DE', titlesCount: () => '', voteAdded: '', voteRemoved: '', limitReached: '', footerThanks: '', footerLine: '', loading: 'Loading…', loadError: '' };
+    const T = mod ? mod.I18N[pageLang] : FALLBACK_T;
+    const voteLabel = T.voteLabel || 'Want to read';
+    const voteLabelOn = T.voteLabelOn || 'Want to read ✓';
+    const nameKey = pageLang === 'ge' ? 'nameGe' : pageLang === 'de' ? 'nameDe' : 'nameEn';
+
+    const loveCount = Object.values(votes).filter(Boolean).length;
+
+    const byCategory = filter === 'all' ? categories : categories.filter((c) => c.id === filter);
+    const visible = byCategory
+      .map((c) => ({ ...c, books: langFilter === 'all' ? c.books : c.books.filter((b) => (b.langs || [b.lang]).includes(langFilter)) }))
+      .filter((c) => c.books.length > 0);
+
+    const pageLangCode = pageLang === 'ge' ? 'GE' : pageLang === 'de' ? 'DE' : 'EN';
+    const decorated = visible.map((c) => ({
+      ...c,
+      catTitle: c[nameKey],
+      countLabel: T.titlesCount(c.books.length),
+      books: [...c.books].sort((a, b) => {
+        const am = (a.langs || [a.lang]).includes(pageLangCode) ? 0 : 1;
+        const bm = (b.langs || [b.lang]).includes(pageLangCode) ? 0 : 1;
+        if (am !== bm) return am - bm;
+        // manual pin: keep Yoko Ogawa's title last within its section regardless of language match
+        const aPinned = (a.author || '').includes('ოგავა') ? 1 : 0;
+        const bPinned = (b.author || '').includes('ოგავა') ? 1 : 0;
+        return aPinned - bPinned;
+      }).map((b) => {
+        const voted = !!votes[b.id];
+        const atLimit = !voted && loveCount >= 5;
+        return {
+          ...b,
+          hasCover: !!b.coverUrl,
+          lang: (b.langs || [b.lang]).join(' · '),
+          langChipStyle: `font-size:0.68rem;font-weight:700;padding:0.12rem 0.5rem;border-radius:5px;letter-spacing:0.03em;background:${b.accent}1A;color:${b.accent}`,
+          toggleVote: () => this.toggleVote(b),
+          voteIcon: voted ? '♥' : '♡',
+          voteLabel: voted ? voteLabelOn : voteLabel,
+          voteBtnStyle: `margin-top:0.7rem;width:100%;border:2px solid ${b.accent};background:${voted ? b.accent : b.accent + '14'};color:${voted ? '#F7F8FB' : b.accent};font-family:'Noto Sans Georgian',sans-serif;font-size:0.88rem;font-weight:700;padding:0.6rem 0.6rem;border-radius:999px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:0.45rem;box-shadow:${voted ? '0 3px 10px ' + b.accent + '55' : 'none'};opacity:${atLimit ? 0.45 : 1}`,
+        };
+      }),
+    }));
+
+    const chips = categories.map((c) => ({
+      id: c.id,
+      title: c[nameKey],
+      accent: c.accent,
+      style: this.chipStyleFor(c.accent, filter === c.id),
+      select: () => this.setState({ filter: c.id }),
+    }));
+
+    const GE_ACCENT = '#C0182D', EN_ACCENT = '#00247D', DE_ACCENT = '#B08A3E', NEUTRAL = '#1F2430';
+
+    return {
+      T,
+      meta,
+      loading,
+      ready: !loading,
+      loadError,
+      retryLoad: () => this.retryLoad(),
+      toastVisible,
+      toastMsg,
+      loveCount,
+      categories: decorated,
+      chips,
+      setPageLangGe: () => this.setState({ pageLang: 'ge' }),
+      setPageLangEn: () => this.setState({ pageLang: 'en' }),
+      setPageLangDe: () => this.setState({ pageLang: 'de' }),
+      pageLangStyle: {
+        ge: this.pageLangBtnStyle(pageLang === 'ge'),
+        en: this.pageLangBtnStyle(pageLang === 'en'),
+        de: this.pageLangBtnStyle(pageLang === 'de'),
+      },
+      pageLangCornerStyle: {
+        ge: this.pageLangCornerStyle(pageLang === 'ge'),
+        en: this.pageLangCornerStyle(pageLang === 'en'),
+        de: this.pageLangCornerStyle(pageLang === 'de'),
+      },
+      selectAll: () => this.setState({ filter: 'all' }),
+      allChipStyle: this.chipStyleFor(NEUTRAL, filter === 'all'),
+      selectLangAll: () => this.setState({ langFilter: 'all' }),
+      selectLangGe: () => this.setState({ langFilter: 'GE' }),
+      selectLangEn: () => this.setState({ langFilter: 'EN' }),
+      selectLangDe: () => this.setState({ langFilter: 'DE' }),
+      notFoundSubmitted: this.state.notFoundSubmitted,
+      notFoundHidden: !this.state.notFoundSubmitted,
+      notFoundModalOpen: this.state.notFoundModalOpen,
+      openNotFound: () => this.setState({ notFoundModalOpen: true }),
+      closeNotFound: () => this.setState({ notFoundModalOpen: false }),
+      closeNotFoundBackdrop: () => this.setState({ notFoundModalOpen: false }),
+      stopPropagation: (e) => e.stopPropagation(),
+      notFoundChipStyle: `font-family:Inter;font-size:0.82rem;font-weight:700;border:1.5px solid #2C6E9E;color:#fff;background:#2C6E9E;padding:0.4rem 0.9rem;border-radius:999px;cursor:pointer;box-shadow:0 2px 8px rgba(44,110,158,0.35)`,
+      notFoundText: this.state.notFoundText,
+      setNotFoundText: (e) => this.setState({ notFoundText: e.target.value }),
+      submitNotFound: () => this.submitNotFound(),
+      langOptions: (T.notFoundLangOptions || []).map((label) => {
+        const active = this.state.notFoundLang === label;
+        return {
+          label,
+          style: `font-family:Inter;font-size:0.82rem;font-weight:600;border:1.5px solid ${active ? '#5D71B3' : '#DADEEC'};color:${active ? '#fff' : '#3A4256'};background:${active ? '#5D71B3' : '#F7F8FB'};padding:0.42rem 0.85rem;border-radius:999px;cursor:pointer`,
+          select: () => this.setState({ notFoundLang: label }),
+        };
+      }),
+      collectionOptions: (T.notFoundCollectionOptions || []).map((label) => {
+        const active = this.state.notFoundCollections.includes(label);
+        return {
+          label,
+          style: `font-family:Inter;font-size:0.82rem;font-weight:600;border:1.5px solid ${active ? '#5D71B3' : '#DADEEC'};color:${active ? '#fff' : '#3A4256'};background:${active ? '#5D71B3' : '#F7F8FB'};padding:0.42rem 0.85rem;border-radius:999px;cursor:pointer`,
+          toggle: () => this.setState((s) => ({
+            notFoundCollections: s.notFoundCollections.includes(label)
+              ? s.notFoundCollections.filter((c) => c !== label)
+              : [...s.notFoundCollections, label],
+          })),
+        };
+      }),
+      langAllStyle: this.langPillStyle(NEUTRAL, langFilter === 'all'),
+      langGeStyle: this.langPillStyle(GE_ACCENT, langFilter === 'GE'),
+      langEnStyle: this.langPillStyle(EN_ACCENT, langFilter === 'EN'),
+      langDeStyle: this.langPillStyle(DE_ACCENT, langFilter === 'DE'),
+      filtersOpen: this.state.filtersOpen,
+      filtersOpenStr: this.state.filtersOpen ? 'true' : 'false',
+      toggleFiltersOpen: () => this.setState((s) => ({ filtersOpen: !s.filtersOpen })),
+      filtersSummary: (filter === 'all' ? T.allBooks : chips.find((c) => c.id === filter)?.title || T.allBooks) + '  ·  ' + (langFilter === 'all' ? T.allLangs : langFilter === 'GE' ? T.langGe : langFilter === 'EN' ? T.langEn : T.langDe),
+    };
+  }
+}
+
+</script>
+</body>
+</html>
