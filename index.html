@@ -7,435 +7,297 @@
 </head>
 <body>
 <x-dc>
-
 <helmet>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Georgian:wght@400;500;600;700;800&amp;family=Space+Grotesk:wght@500;600;700&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Georgian:wght@600;800;900&family=Noto+Serif+Georgian:wght@400;600;800&family=Archivo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
-    @keyframes fadeIn { from { opacity:0 } to { opacity:1 } }
-    body { margin:0; background:#F7F8FB; color:#1F2430; font-family:'Inter',sans-serif; line-height:1.5; }
-    * { box-sizing:border-box; }
-    a { color:#5D71B3; }
-    a:hover { color:#4A5FA0; }
-    @media (max-width: 640px) {
-      [data-book-grid] { grid-template-columns: repeat(2, minmax(0,1fr)) !important; grid-auto-rows: auto !important; gap: 1.6rem 0.7rem !important; align-items: start !important; }
-      [data-filter-row] { flex-wrap: nowrap !important; overflow-x: auto !important; justify-content: flex-start !important; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
-      [data-filter-row]::-webkit-scrollbar { display: none; }
-      [data-filter-row] button { flex-shrink: 0; }
-      [data-filter-row][data-open="false"] { display: none !important; }
-      [data-filters-toggle] { display: flex !important; }
+    body { margin:0; background:#afd6e7; color:#172a55; font-family:'Archivo',system-ui,sans-serif; -webkit-font-smoothing:antialiased; }
+    a { color:#ec3b2e; }
+    a:hover { color:#cf2f24; }
+    @keyframes pulseGlow { 0%,100% { box-shadow:0 0 0 0 rgba(236,59,46,0.4) } 50% { box-shadow:0 0 0 12px rgba(236,59,46,0) } }
+    @keyframes riseIn { from { opacity:0; transform:translateY(12px) } to { opacity:1; transform:none } }
+    @media (max-width: 700px) {
+      [data-count-grid] { gap:0.45rem !important; }
+      [data-count-cell] { padding:0.8rem 0.2rem !important; }
+      [data-count-num] { font-size:2.4rem !important; }
+      [data-hero-h1] { font-size:2.1rem !important; }
+      [data-pad] { padding-left:1.15rem !important; padding-right:1.15rem !important; }
+      [data-cta-row] { flex-direction:column !important; align-items:stretch !important; }
+      [data-intro-line] { white-space:normal !important; }
     }
-    [data-filters-toggle] { display: none; }
   </style>
 </helmet>
 
-<div style="position:relative;padding:2.2rem 1.5rem 3rem;text-align:center;background:radial-gradient(ellipse at top, rgba(93,113,179,0.10), transparent 60%),#F7F8FB;border-bottom:2px solid #B9C2E0;overflow:hidden">
-  <div style="font-family:'Noto Sans Georgian',serif;font-size:1.1rem;color:#5D71B3;letter-spacing:0.08em;margin-bottom:0.9rem">{{ T.eyebrow }}</div>
-  <div style="display:inline-flex;gap:0.25rem;padding:0.25rem;background:#EEF0F8;border-radius:999px;margin-bottom:1.6rem">
-    <button style="{{ pageLangStyle.ge }}" onClick="{{ setPageLangGe }}">ქართული</button>
-    <button style="{{ pageLangStyle.en }}" onClick="{{ setPageLangEn }}">English</button>
-    <button style="{{ pageLangStyle.de }}" onClick="{{ setPageLangDe }}">Deutsch</button>
-  </div>
-  <h1 style="font-family:'Space Grotesk',serif;font-weight:900;font-size:clamp(2.2rem, 5.5vw, 3.8rem);margin:0.2rem 0 0.6rem;color:#1F2430">{{ T.titlePre }}<em style="color:#5D71B3;font-style:italic">{{ T.titleEm }}</em></h1>
-  <p style="max-width:640px;margin:0 auto 1.4rem;font-size:1.02rem;color:#3A4256">{{ T.heroP1 }}</p>
-  <div style="display:flex;justify-content:center;gap:4px;margin-bottom:1.8rem"><span style="width:38px;height:4px;border-radius:2px;background:#000000"></span><span style="width:38px;height:4px;border-radius:2px;background:#DD0000"></span><span style="width:38px;height:4px;border-radius:2px;background:#FFCE00"></span></div>
-  <div style="display:flex;gap:2.5rem;justify-content:center;flex-wrap:wrap">
-    <div style="text-align:center"><span style="font-family:'Space Grotesk',serif;font-size:2rem;font-weight:700;color:#5D71B3;display:block">{{ meta.totalBooks }}</span><span style="font-size:0.78rem;text-transform:uppercase;letter-spacing:0.06em;color:#6b7290">{{ T.statTitles }}</span></div>
-    <div style="text-align:center"><span style="font-family:'Space Grotesk',serif;font-size:2rem;font-weight:700;color:#5D71B3;display:block">{{ meta.publisherCount }}</span><span style="font-size:0.78rem;text-transform:uppercase;letter-spacing:0.06em;color:#6b7290">{{ T.statPublishers }}</span></div>
-    <div style="text-align:center"><span style="font-family:'Space Grotesk',serif;font-size:2rem;font-weight:700;color:#5D71B3;display:block">{{ meta.categoryCount }}</span><span style="font-size:0.78rem;text-transform:uppercase;letter-spacing:0.06em;color:#6b7290">{{ T.statCategories }}</span></div>
-  </div>
-</div>
+<div style="min-height:100vh;background:radial-gradient(ellipse 900px 520px at 50% -8%, rgba(236,59,46,0.10), transparent 70%), #afd6e7">
 
-<sc-if value="{{ loading }}" hint-placeholder-val="{{ false }}">
-  <div style="text-align:center;padding:3rem 1rem;color:#6b7290;font-size:0.95rem">{{ T.loading }}</div>
-</sc-if>
-
-<sc-if value="{{ ready }}" hint-placeholder-val="{{ false }}">
-<div>
-<sc-if value="{{ loadError }}" hint-placeholder-val="{{ false }}">
-  <div style="max-width:900px;margin:0 auto;padding:0.6rem 1rem;text-align:center;color:#8A5A2A;background:#FBEFD8;border-radius:8px;font-size:0.82rem;display:flex;gap:0.6rem;align-items:center;justify-content:center;flex-wrap:wrap">{{ T.loadError }}<button onClick="{{ retryLoad }}" style="border:1px solid #8A5A2A;color:#8A5A2A;background:transparent;padding:0.25rem 0.7rem;border-radius:999px;font-size:0.78rem;cursor:pointer">↻</button></div>
-</sc-if>
-
-<div style="position:sticky;top:0;z-index:20;background:rgba(247,248,251,0.96);backdrop-filter:blur(6px);border-bottom:1px solid rgba(93,113,179,0.3);padding:0.8rem 1rem;display:flex;flex-direction:column;gap:0.6rem;align-items:center">
-  <div style="display:inline-flex;gap:0.15rem;padding:0.15rem;background:#EEF0F8;border-radius:999px">
-    <button style="{{ pageLangCornerStyle.ge }}" onClick="{{ setPageLangGe }}">ქართული</button>
-    <button style="{{ pageLangCornerStyle.en }}" onClick="{{ setPageLangEn }}">English</button>
-    <button style="{{ pageLangCornerStyle.de }}" onClick="{{ setPageLangDe }}">Deutsch</button>
-  </div>
-  <button data-filters-toggle="1" onClick="{{ toggleFiltersOpen }}" style="width:100%;justify-content:space-between;align-items:center;gap:0.6rem;font-family:Inter;font-size:0.86rem;font-weight:600;border:1.5px solid #DADEEC;color:#1F2430;background:#fff;padding:0.65rem 1rem;border-radius:14px;cursor:pointer;box-shadow:0 1px 4px rgba(31,36,48,0.06)"><span style="display:flex;align-items:center;gap:0.4rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"><span style="font-size:0.95rem">☰</span>{{ filtersSummary }}</span><span style="color:#8992AA;font-size:0.8rem">{{ filtersOpen ? '▲' : '▼' }}</span></button>
-  <div data-filter-row="1" data-open="{{ filtersOpenStr }}" style="display:flex;gap:0.5rem;flex-wrap:wrap;justify-content:center;width:100%">
-    <button style="{{ allChipStyle }}" onClick="{{ selectAll }}">{{ T.allBooks }}</button>
-    <sc-for list="{{ chips }}" as="chip" hint-placeholder-count="6">
-      <button style="{{ chip.style }}" onClick="{{ chip.select }}">{{ chip.title }}</button>
-    </sc-for>
-    <button style="{{ notFoundChipStyle }}" onClick="{{ openNotFound }}" title="{{ T.notFoundHeading }}">✎ {{ T.notFoundChipLabel }} ({{ T.notFoundSurveyTag }})</button>
-  </div>
-  <div data-filter-row="1" data-open="{{ filtersOpenStr }}" style="display:flex;gap:0.4rem;align-items:center;flex-wrap:wrap;justify-content:center">
-    <button style="{{ langAllStyle }}" onClick="{{ selectLangAll }}">{{ T.allLangs }}</button>
-    <button style="{{ langGeStyle }}" onClick="{{ selectLangGe }}">{{ T.langGe }}</button>
-    <button style="{{ langEnStyle }}" onClick="{{ selectLangEn }}">{{ T.langEn }}</button>
-    <button style="{{ langDeStyle }}" onClick="{{ selectLangDe }}">{{ T.langDe }}</button>
-    <span style="margin-left:0.6rem;font-size:0.78rem;font-weight:700;color:#5D71B3;background:#E4E8F5;padding:0.32rem 0.7rem;border-radius:999px">♥ {{ loveCount }}/5</span>
-  </div>
-</div>
-
-<sc-for list="{{ categories }}" as="cluster" hint-placeholder-count="6">
-  <section style="margin:2.4rem 0 0;padding:2.4rem 0 3rem" data-screen-label="{{ cluster.catTitle }}">
-   <div style="max-width:1280px;margin:0 auto;padding:0 1.5rem">
-    <div style="margin-bottom:1.6rem">
-      <h2 style="font-family:'Space Grotesk',serif;font-size:2.4rem;font-weight:700;margin:0 0 0.3rem;padding-left:0.7rem;border-left:5px solid {{ cluster.accent }};color:{{ cluster.accent }}">{{ cluster.catTitle }}</h2>
-      <span style="margin-left:0.9rem;font-size:0.78rem;font-weight:700;color:{{ cluster.accent }};text-transform:uppercase;letter-spacing:0.06em">{{ cluster.countLabel }}</span>
-    </div>
-    <div data-book-grid="1" style="display:grid;grid-template-columns:repeat(auto-fill, minmax(190px,1fr));grid-auto-rows:auto;align-items:start;gap:2rem 1.2rem;padding-bottom:0.5rem">
-      <sc-for list="{{ cluster.books }}" as="book" hint-placeholder-count="8">
-        <article style="display:flex;flex-direction:column;height:100%;animation:fadeIn 0.3s ease">
-          <div style="position:relative;aspect-ratio:2/3;border-radius:8px;overflow:hidden;box-shadow:0 3px 10px rgba(43,27,36,0.18)">
-            <div style="position:absolute;inset:0;display:flex;flex-direction:column;padding:0.9rem 0.8rem;background:{{ book.bg }};color:{{ book.textColor }};z-index:1">
-              <div style="font-size:0.62rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;opacity:0.75">{{ book.publisher }}</div>
-              <div style="display:flex;flex-direction:column;gap:0.25rem;text-align:center;padding-top:0.5rem;max-height:36%;overflow:hidden">
-                <div style="font-family:'Noto Sans Georgian',serif;font-weight:700;font-size:0.92rem;line-height:1.2;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden">{{ book.title }}</div>
-                <div style="height:1px;background:currentColor;opacity:0.3;margin:0.3rem auto 0;width:32px"></div>
-                <div style="font-size:0.68rem;font-weight:700;letter-spacing:0.02em;opacity:0.95;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ book.author }}</div>
-              </div>
-            </div>
-            <sc-if value="{{ book.hasCover }}" hint-placeholder-val="{{ false }}">
-              <div id="{{ book.slotId }}-bd" style="position:absolute;inset:0;z-index:2;background:{{ book.bg }}"></div>
-              <img src="{{ book.coverUrl }}" alt="{{ book.title }}" onerror="this.style.display='none';var bd=document.getElementById('{{ book.slotId }}-bd');if(bd)bd.style.display='none'" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:3">
-            </sc-if>
-          </div>
-          <button onClick="{{ book.toggleVote }}" style="{{ book.voteBtnStyle }}"><span style="font-size:1.15rem;line-height:1">{{ book.voteIcon }}</span>{{ book.voteLabel }}</button>
-          <div style="padding:0.55rem 0.15rem 0 ">
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.3rem">
-              <span style="{{ book.langChipStyle }}">{{ book.lang }}</span>
-              <span style="font-size:0.74rem;font-weight:700;color:{{ book.accent }};text-transform:uppercase;letter-spacing:0.04em">{{ book.publisher }}</span>
-            </div>
-            <div style="font-family:'Noto Sans Georgian',serif;font-weight:700;font-size:0.9rem;line-height:1.25;margin-bottom:0.3rem;color:{{ book.accent }}">{{ book.title }}</div>
-            <sc-if value="{{ book.author }}" hint-placeholder-val="{{ true }}">
-              <div style="font-size:0.8rem;font-weight:700;color:#1F2430;margin-bottom:0.4rem">{{ book.author }}</div>
-            </sc-if>
-            <sc-if value="{{ book.description }}" hint-placeholder-val="{{ true }}">
-              <p style="font-size:0.78rem;line-height:1.4;color:#3A4256;margin:0">{{ book.description }}</p>
-            </sc-if>
-          </div>
-        </article>
-      </sc-for>
-    </div>
-   </div>
-  </section>
-</sc-for>
-
-<section style="max-width:1280px;margin:0 auto;padding:0 1.5rem 3rem">
-  <div style="max-width:220px">
-    <article style="display:flex;flex-direction:column;height:100%;cursor:pointer" onClick="{{ openNotFound }}">
-      <div style="position:relative;aspect-ratio:2/3;border-radius:8px;overflow:hidden;box-shadow:0 3px 10px rgba(43,27,36,0.18);background:linear-gradient(160deg,#1F2430,#3A4470);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1.2rem;text-align:center;color:#F7F8FB">
-        <div style="font-size:2.2rem;line-height:1;margin-bottom:0.6rem">＋</div>
-        <div style="font-family:'Noto Sans Georgian',serif;font-weight:700;font-size:0.95rem;line-height:1.3">{{ T.notFoundHeading }}</div>
+  <div style="position:sticky;top:0;z-index:30;backdrop-filter:blur(8px);background:rgba(175,214,231,0.94);border-bottom:1px solid rgba(23,42,85,0.09)">
+    <div data-pad="1" style="max-width:1000px;margin:0 auto;padding:0.7rem 1.6rem;display:flex;align-items:center;justify-content:space-between;gap:1rem">
+      <div style="font-family:'Noto Sans Georgian','Archivo',sans-serif;font-weight:900;font-size:0.95rem;letter-spacing:0.02em;color:#172a55">GZA</div>
+      <div style="display:inline-flex;gap:0.1rem;padding:0.18rem;background:rgba(23,42,85,0.05);border-radius:999px;border:1px solid rgba(23,42,85,0.09)">
+        <button style="{{ langGeStyle }}" onClick="{{ setGe }}">GE</button>
+        <button style="{{ langEnStyle }}" onClick="{{ setEn }}">EN</button>
+        <button style="{{ langDeStyle }}" onClick="{{ setDe }}">DE</button>
       </div>
-      <div style="padding:0.55rem 0.15rem 0;font-size:0.78rem;color:#4A5170;text-align:center">{{ T.notFoundSub }}</div>
-    </article>
-  </div>
-</section>
-</div>
-</sc-if>
-
-<sc-if value="{{ toastVisible }}" hint-placeholder-val="{{ false }}">
-  <div style="position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);background:#1F2430;color:#F7F8FB;padding:0.7rem 1.3rem;border-radius:999px;font-size:0.85rem;font-family:'Inter',sans-serif;box-shadow:0 6px 20px rgba(0,0,0,0.25);z-index:100;max-width:90vw;text-align:center">{{ toastMsg }}</div>
-</sc-if>
-
-<sc-if value="{{ notFoundModalOpen }}" hint-placeholder-val="{{ false }}">
-  <div style="position:fixed;inset:0;background:rgba(20,23,32,0.6);backdrop-filter:blur(4px);z-index:200;display:flex;align-items:center;justify-content:center;padding:1.2rem;animation:fadeIn 0.18s ease" onClick="{{ closeNotFoundBackdrop }}">
-    <div style="background:#FFFFFF;border-radius:22px;padding:2.2rem 2rem;max-width:540px;width:100%;max-height:88vh;overflow-y:auto;position:relative;box-shadow:0 30px 70px rgba(15,17,25,0.35);border:1px solid rgba(255,255,255,0.6)" onClick="{{ stopPropagation }}">
-      <button onClick="{{ closeNotFound }}" style="position:absolute;top:1.1rem;right:1.1rem;width:32px;height:32px;border-radius:50%;background:#F1F2F7;border:none;font-size:1.1rem;color:#5A6178;cursor:pointer;line-height:1;display:flex;align-items:center;justify-content:center" style-hover="background:#E4E6F0;color:#1F2430">×</button>
-      <div style="display:inline-block;font-size:0.68rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#5D71B3;background:#5D71B31A;padding:0.28rem 0.7rem;border-radius:999px;margin-bottom:0.8rem">{{ T.notFoundSurveyTag }}</div>
-      <h3 style="font-family:'Space Grotesk',serif;font-size:1.55rem;font-weight:700;margin:0 0 0.5rem;color:#1F2430;letter-spacing:-0.01em">{{ T.notFoundHeading }}</h3>
-      <p style="font-size:0.92rem;color:#5A6178;margin:0 0 1.6rem;line-height:1.5">{{ T.notFoundSub }}</p>
-      <sc-if value="{{ notFoundSubmitted }}" hint-placeholder-val="{{ false }}">
-        <div style="padding:1.1rem;border-radius:14px;background:#E8F3E6;color:#2E5B3C;font-size:0.92rem;text-align:center;font-weight:600">{{ T.notFoundThanks }}</div>
-      </sc-if>
-      <sc-if value="{{ notFoundHidden }}" hint-placeholder-val="{{ true }}">
-      <div style="display:flex;flex-direction:column;gap:1.5rem">
-        <div>
-          <label style="display:block;font-size:0.76rem;font-weight:700;letter-spacing:0.03em;text-transform:uppercase;color:#8992AA;margin-bottom:0.55rem">{{ T.notFoundTextLabel }}</label>
-          <textarea value="{{ notFoundText }}" onChange="{{ setNotFoundText }}" placeholder="{{ T.notFoundTextPlaceholder }}" style="width:100%;min-height:76px;border:1.5px solid #E4E6F0;background:#F7F8FB;border-radius:12px;padding:0.7rem 0.8rem;font-family:'Inter',sans-serif;font-size:0.9rem;resize:vertical;outline:none;box-sizing:border-box" style-focus="border-color:#5D71B3;background:#FFFFFF"></textarea>
-        </div>
-        <div>
-          <label style="display:block;font-size:0.76rem;font-weight:700;letter-spacing:0.03em;text-transform:uppercase;color:#8992AA;margin-bottom:0.6rem">{{ T.notFoundLangLabel }}</label>
-          <div style="display:flex;gap:0.5rem;flex-wrap:wrap">
-            <sc-for list="{{ langOptions }}" as="opt" hint-placeholder-count="4">
-              <button onClick="{{ opt.select }}" style="{{ opt.style }}">{{ opt.label }}</button>
-            </sc-for>
-          </div>
-        </div>
-        <div>
-          <label style="display:block;font-size:0.76rem;font-weight:700;letter-spacing:0.03em;text-transform:uppercase;color:#8992AA;margin-bottom:0.6rem">{{ T.notFoundCollectionLabel }}</label>
-          <div style="display:flex;gap:0.5rem;flex-wrap:wrap">
-            <sc-for list="{{ collectionOptions }}" as="opt" hint-placeholder-count="6">
-              <button onClick="{{ opt.toggle }}" style="{{ opt.style }}">{{ opt.label }}</button>
-            </sc-for>
-          </div>
-        </div>
-        <button onClick="{{ submitNotFound }}" style="margin-top:0.3rem;background:#1F2430;color:#F7F8FB;border:none;border-radius:12px;padding:0.75rem 1.4rem;font-size:0.92rem;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;width:100%" style-hover="background:#343B52">{{ T.notFoundSubmit }}</button>
-      </div>
-      </sc-if>
     </div>
   </div>
-</sc-if>
 
-<footer style="text-align:center;padding:3rem 1.5rem 4rem;color:#8992AA;font-size:0.85rem">
-  <div style="font-family:'Noto Sans Georgian',serif;font-size:1rem;margin-bottom:0.3rem;color:#5D71B3">{{ T.footerThanks }}</div>
-  <div>{{ T.footerLine }}</div>
-</footer>
+  <div data-pad="1" style="max-width:1000px;margin:0 auto;padding:3.4rem 1.6rem 2.2rem;text-align:center;animation:riseIn 0.5s ease both">
+    <div style="display:inline-flex;align-items:center;gap:0.5rem;padding:0.35rem 0.85rem;border-radius:999px;border:1px solid rgba(236,59,46,0.4);background:rgba(236,59,46,0.09);font-size:0.72rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:#ec3b2e;margin-bottom:1.5rem">
+      <span style="width:6px;height:6px;border-radius:50%;background:#ec3b2e;animation:pulseGlow 2.2s ease-in-out infinite"></span>
+      <span>{{ T.eyebrow }}</span>
+    </div>
+    <h1 data-hero-h1="1" style="font-family:'Noto Sans Georgian','Archivo',sans-serif;font-weight:900;font-size:3.6rem;line-height:1.02;letter-spacing:-0.035em;margin:0 0 1.6rem;text-wrap:balance;color:#ec3b2e">{{ T.title }}</h1>
+    <div style="font-family:'Noto Sans Georgian','Archivo',sans-serif;font-size:1.15rem;font-weight:800;letter-spacing:0.01em;color:#ec3b2e;margin:0 auto 1.1rem">{{ T.dateLine }}</div>
+    <div style="font-size:1.05rem;font-weight:500;color:rgba(23,42,85,0.7);margin:0 auto 2.6rem;max-width:none;line-height:1.6;text-wrap:pretty"><span data-intro-line="1" style="display:block;white-space:nowrap">{{ T.body1 }}</span><span data-intro-line="1" style="display:block;white-space:nowrap">{{ T.body2 }}</span></div>
 
+    <div data-count-grid="1" style="display:grid;grid-template-columns:repeat(4,1fr);gap:0.7rem;max-width:640px;margin:0 auto">
+      <div data-count-cell="1" style="padding:1.15rem 0.4rem;border-radius:14px;background:#fff;border:1px solid rgba(23,42,85,0.1);box-shadow:0 1px 3px rgba(23,42,85,0.05)">
+        <div data-count-num="1" style="font-size:3.1rem;font-weight:800;line-height:1;font-variant-numeric:tabular-nums;letter-spacing:-0.03em;color:#172a55">{{ days }}</div>
+        <div style="font-size:0.66rem;font-weight:700;letter-spacing:0.13em;text-transform:uppercase;color:rgba(23,42,85,0.45);margin-top:0.5rem">{{ T.days }}</div>
+      </div>
+      <div data-count-cell="1" style="padding:1.15rem 0.4rem;border-radius:14px;background:#fff;border:1px solid rgba(23,42,85,0.1);box-shadow:0 1px 3px rgba(23,42,85,0.05)">
+        <div data-count-num="1" style="font-size:3.1rem;font-weight:800;line-height:1;font-variant-numeric:tabular-nums;letter-spacing:-0.03em;color:#172a55">{{ hours }}</div>
+        <div style="font-size:0.66rem;font-weight:700;letter-spacing:0.13em;text-transform:uppercase;color:rgba(23,42,85,0.45);margin-top:0.5rem">{{ T.hours }}</div>
+      </div>
+      <div data-count-cell="1" style="padding:1.15rem 0.4rem;border-radius:14px;background:#fff;border:1px solid rgba(23,42,85,0.1);box-shadow:0 1px 3px rgba(23,42,85,0.05)">
+        <div data-count-num="1" style="font-size:3.1rem;font-weight:800;line-height:1;font-variant-numeric:tabular-nums;letter-spacing:-0.03em;color:#172a55">{{ minutes }}</div>
+        <div style="font-size:0.66rem;font-weight:700;letter-spacing:0.13em;text-transform:uppercase;color:rgba(23,42,85,0.45);margin-top:0.5rem">{{ T.minutes }}</div>
+      </div>
+      <div data-count-cell="1" style="padding:1.15rem 0.4rem;border-radius:14px;background:rgba(236,59,46,0.1);border:1px solid rgba(236,59,46,0.32)">
+        <div data-count-num="1" style="font-size:3.1rem;font-weight:800;line-height:1;font-variant-numeric:tabular-nums;letter-spacing:-0.03em;color:#ec3b2e">{{ seconds }}</div>
+        <div style="font-size:0.66rem;font-weight:700;letter-spacing:0.13em;text-transform:uppercase;color:rgba(236,59,46,0.75);margin-top:0.5rem">{{ T.seconds }}</div>
+      </div>
+    </div>
+
+    <div style="font-size:0.72rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:rgba(23,42,85,0.5);margin-top:1.1rem">{{ T.countdownLabel }}</div>
+  </div>
+
+  <div data-pad="1" style="max-width:1000px;margin:0 auto;padding:0.2rem 1.6rem 0">
+    <div data-cta-row="1" style="display:flex;gap:0.8rem;align-items:center;justify-content:center;flex-wrap:wrap">
+      <a href="https://www.startnext.com/gza-georgischer-buchtag-berlin" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;justify-content:center;gap:0.6rem;padding:1.05rem 2.1rem;border-radius:999px;background:#ec3b2e;color:#fff;font-size:1.02rem;font-weight:800;letter-spacing:0.01em;white-space:nowrap;text-decoration:none;box-shadow:0 8px 24px rgba(236,59,46,0.32)" style-hover="background:#cf2f24;transform:translateY(-1px)">{{ T.cta }}</a>
+    </div>
+    <div style="text-align:center;font-size:0.85rem;color:rgba(23,42,85,0.55);margin-top:1.4rem;max-width:54ch;margin-left:auto;margin-right:auto;line-height:1.55;text-wrap:pretty">{{ T.finePrint }}</div>
+  </div>
+
+  <div data-pad="1" style="max-width:1000px;margin:0 auto;padding:3.4rem 1.6rem 1rem">
+    <div style="border-radius:20px;background:#fff;border:1px solid rgba(23,42,85,0.1);box-shadow:0 2px 10px rgba(23,42,85,0.05);padding:2.1rem 1.9rem">
+      <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:1.2rem;flex-wrap:wrap;margin-bottom:1.4rem">
+        <div>
+          <div style="font-size:0.68rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:rgba(23,42,85,0.45);margin-bottom:0.45rem">{{ T.raisedLabel }}</div>
+          <div style="font-family:'Archivo',sans-serif;font-size:2.7rem;font-weight:800;line-height:1;letter-spacing:-0.03em;color:#ec3b2e;font-variant-numeric:tabular-nums">{{ raisedFmt }}</div>
+        </div>
+        <div style="text-align:right">
+          <div style="font-size:0.68rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:rgba(23,42,85,0.45);margin-bottom:0.45rem">{{ T.nextGoalLabel }}</div>
+          <div style="font-size:1.35rem;font-weight:700;color:#172a55;font-variant-numeric:tabular-nums">{{ nextGoalFmt }}</div>
+        </div>
+      </div>
+      <div style="height:10px;border-radius:999px;background:rgba(23,42,85,0.08);overflow:hidden">
+        <div style="{{ barStyle }}"></div>
+      </div>
+      <div style="font-size:0.88rem;color:rgba(23,42,85,0.6);margin-top:0.9rem;line-height:1.5">{{ T.gapLine }}</div>
+
+      <div style="height:1px;background:rgba(23,42,85,0.09);margin:1.9rem 0 1.6rem"></div>
+
+      <div style="font-size:0.68rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:rgba(23,42,85,0.45);margin-bottom:1rem">{{ T.milestonesLabel }}</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:0.7rem">
+        <sc-for list="{{ milestones }}" as="m" hint-placeholder-count="5">
+          <div style="{{ m.cardStyle }}">
+            <div style="{{ m.nameStyle }}">{{ m.name }}</div>
+            <div style="{{ m.amountStyle }}">{{ m.amount }}</div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </div>
+
+  <div data-pad="1" style="max-width:1000px;margin:0 auto;padding:2.6rem 1.6rem 4.5rem;text-align:center">
+    <div style="font-family:'Noto Sans Georgian','Archivo',sans-serif;font-size:1.55rem;font-weight:800;letter-spacing:-0.02em;margin-bottom:0.6rem;color:#172a55">{{ T.shareTitle }}</div>
+    <div style="font-size:0.95rem;color:rgba(23,42,85,0.6);max-width:46ch;margin:0 auto 1.5rem;line-height:1.55;text-wrap:pretty">{{ T.shareBody }}</div>
+    <div style="display:flex;gap:0.55rem;justify-content:center;flex-wrap:wrap">
+      <button onClick="{{ copyLink }}" style="padding:0.72rem 1.5rem;border-radius:999px;border:1px solid #ec3b2e;background:#ec3b2e;color:#fff;font-size:0.88rem;font-weight:700;cursor:pointer;white-space:nowrap;font-family:'Archivo',sans-serif;box-shadow:0 3px 10px rgba(236,59,46,0.3)" style-hover="background:#cf2f24;border-color:#cf2f24;transform:translateY(-1px)">{{ copyLabel }}</button>
+    </div>
+    <div style="font-size:0.82rem;color:rgba(23,42,85,0.38);margin-top:2.4rem">{{ T.tagLine }}</div>
+  </div>
+</div>
 </x-dc>
-<script type="text/x-dc" data-dc-script>
+<script type="text/x-dc" data-dc-script data-props="{&quot;eventDate&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;2026-10-11T00:00:00+02:00&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Campaign&quot;},&quot;raised&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:50,&quot;min&quot;:0,&quot;max&quot;:13000,&quot;step&quot;:50,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Campaign&quot;},&quot;fundingCsvUrl&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;https://docs.google.com/spreadsheets/d/1C7Wqh0vY1LjaXToAHaWJRuWM_39mAI9e_4fvhDkcXFU/gviz/tq?tqx=out:csv&amp;sheet=funding&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Campaign&quot;}}">
+const CAMPAIGN = 'https://www.startnext.com/gza-georgischer-buchtag-berlin';
+
+const STRINGS = {
+  ge: {
+    eyebrow: 'კენჭისყრა დასრულდა. ქრაუდფანდინგი დაიწყო.',
+    title: 'ქართული წიგნის დღე ბერლინში',
+    dateLine: '11 ოქტომბერი · ბერლინი',
+    body1: 'ერთად გავხადოთ ეს დღე სახალისო და მრავალფეროვანი.',
+    body2: 'დაუჭირეთ მხარი ჩვენს კამპანიას!',
+    countdownLabel: 'დარჩა ღონისძიებამდე',
+    ctaSecondary: 'კამპანია Startnext-ზე',
+    finePrint: 'განახლებებისთვის მიჰყევით @gza.europe-ს.',
+    days: 'დღე', hours: 'საათი', minutes: 'წუთი', seconds: 'წამი',
+    cta: 'დააფინანსეთ კამპანია',
+    raisedLabel: 'შეგროვებულია',
+    nextGoalLabel: 'შემდეგი მიზანი',
+    milestonesLabel: 'კამპანიის ეტაპები',
+    shareTitle: 'გააზიარეთ და დაგვეხმარეთ!',
+    shareBody: 'მოუყევით ამ კამპანიის შესახებ თქვენს მეგობრებს. ყოველი გაზიარება მნიშვნელოვანია!',
+    copy: 'ბმულის კოპირება', copied: 'დაკოპირდა',
+    tagLine: 'მოგვნიშნეთ: @gza.europe · @startnext',
+    gap: (amount, goal) => `კიდევ ${amount} შემდეგი ეტაპის — ${goal} — მისაღწევად.`
+  },
+  en: {
+    eyebrow: 'Poll finished. Crowdfunding started.',
+    title: 'Georgian Book Day Berlin',
+    dateLine: '11 October · Berlin',
+    body1: "Let's make this day fun and diverse together.",
+    body2: 'Support our campaign!',
+    countdownLabel: 'Until the Event',
+    ctaSecondary: 'View the campaign on Startnext',
+    finePrint: 'Follow @gza.europe for updates.',
+    days: 'Days', hours: 'Hours', minutes: 'Minutes', seconds: 'Seconds',
+    cta: 'Fund the Campaign',
+    raisedLabel: 'Raised so far',
+    nextGoalLabel: 'Next goal',
+    milestonesLabel: 'Campaign milestones',
+    shareTitle: 'Share it and help us!',
+    shareBody: 'Tell your friends about this campaign. Every share counts!',
+    copy: 'Copy link', copied: 'Copied',
+    tagLine: 'Tag us: @gza.europe · @startnext',
+    gap: (amount, goal) => `${amount} to go before the next milestone, ${goal}.`
+  },
+  de: {
+    eyebrow: 'Abstimmung beendet. Crowdfunding gestartet.',
+    title: 'Georgischer Buchtag Berlin',
+    dateLine: '11. Oktober · Berlin',
+    body1: 'Machen wir diesen Tag gemeinsam bunt und lebendig.',
+    body2: 'Unterstützen Sie unsere Kampagne!',
+    countdownLabel: 'Bis zur Veranstaltung',
+    ctaSecondary: 'Kampagne auf Startnext ansehen',
+    finePrint: 'Folgt @gza.europe für Updates.',
+    days: 'Tage', hours: 'Stunden', minutes: 'Minuten', seconds: 'Sekunden',
+    cta: 'Kampagne unterstützen',
+    raisedLabel: 'Bisher gesammelt',
+    nextGoalLabel: 'Nächstes Ziel',
+    milestonesLabel: 'Etappenziele der Kampagne',
+    shareTitle: 'Teilen Sie es und helfen Sie uns!',
+    shareBody: 'Erzählen Sie Ihren Freunden von dieser Kampagne. Jede Weiterempfehlung zählt!',
+    copy: 'Link kopieren', copied: 'Kopiert',
+    tagLine: 'Folgen Sie uns: @gza.europe · @startnext',
+    gap: (amount, goal) => `Noch ${amount} bis zum nächsten Etappenziel: ${goal}.`
+  }
+};
+
+const MILESTONES = [
+  { value: 4000, ge: 'საფუძველი', en: 'The Foundation', de: 'Der Grundstein' },
+  { value: 6800, ge: 'პირველი გვერდი', en: 'The First Page', de: 'Die erste Seite' },
+  { value: 7400, ge: 'ახალი თავი', en: 'A New Chapter', de: 'Ein neues Kapitel' },
+  { value: 9500, ge: 'კულმინაცია', en: 'The Climax', de: 'Der Höhepunkt' },
+  { value: 12300, ge: 'დიდი ფინალი', en: 'The Grand Finale', de: 'Das große Finale' }
+];
+
 class Component extends DCLogic {
-  state = {
-    pageLang: 'ge',
-    filter: 'all',
-    langFilter: 'all',
-    categories: [],
-    meta: { totalBooks: 0, publisherCount: 0, categoryCount: 0 },
-    loading: true,
-    loadError: false,
-    votes: {},
-    toastVisible: false,
-    toastMsg: '',
-    notFoundText: '',
-    notFoundLang: '',
-    notFoundCollections: [],
-    notFoundSubmitted: false,
-    notFoundModalOpen: false,
-    filtersOpen: false,
-  };
+  state = { pageLang: 'ge', diff: null, copied: false, liveRaised: null };
 
-  // Each language has its own Google Form; field IDs come from that form's own definition.
-  NF_FORMS = {
-    ge: { action: 'https://docs.google.com/forms/d/e/1FAIpQLSe6j1bi6nDY_iaFuG0Ej_o2b51N2J4Wr3THkErUcGfKnRz0Cw/formResponse', text: 'entry.1829177881', lang: 'entry.1966403157', collection: 'entry.249293398' },
-    en: { action: 'https://docs.google.com/forms/d/e/1FAIpQLSc-Fg4Gvezc0SviRfPcHPMhU0oVgOI-cnksHGOeDjE-G0xhhQ/formResponse', text: 'entry.767568524', lang: 'entry.1922483113', collection: 'entry.2097193210' },
-    de: { action: 'https://docs.google.com/forms/d/e/1FAIpQLSc6Q2H47f7F1A9t7oNqX_GfC313wbAMtNfcaeoZWKRYbWx6Kw/formResponse', text: 'entry.1373605184', lang: 'entry.1994917952', collection: 'entry.956182207' },
-  };
-
-  submitNotFound() {
-    const { pageLang, notFoundText, notFoundLang, notFoundCollections } = this.state;
-    const cfg = this.NF_FORMS[pageLang];
-    const body = new URLSearchParams();
-    if (notFoundText) body.set(cfg.text, notFoundText);
-    if (notFoundLang) body.set(cfg.lang, notFoundLang);
-    notFoundCollections.forEach((c) => body.append(cfg.collection, c));
-    fetch(cfg.action, { method: 'POST', mode: 'no-cors', body }).catch((e) => console.error('Not-found form submit failed:', e));
-    this.setState({ notFoundSubmitted: true });
+  componentDidMount() {
+    this.tick();
+    this.timer = setInterval(() => this.tick(), 1000);
+    this.fetchRaised();
   }
 
-  async componentDidMount() {
-    const { loadCatalogue } = await import('./sheet-data.js');
-    let votes = {};
-    try { votes = JSON.parse(localStorage.getItem('gbf-votes-v3') || '{}'); } catch (e) {}
-    try {
-      const data = await loadCatalogue();
-      this.setState({
-        categories: data.categories,
-        meta: { totalBooks: data.totalBooks, publisherCount: data.publisherCount, categoryCount: data.categories.length },
-        loading: false,
-        loadError: false,
-        votes,
-      });
-    } catch (err) {
-      console.error('Live sheet load failed:', err);
-      this.setState({ loading: false, loadError: true, votes });
-    }
+  // Reads the "raised" cell the Apps Script writes (see startnext-sync.gs).
+  // Any failure leaves liveRaised null and the manual `raised` prop is used.
+  fetchRaised() {
+    const raw = this.props.fundingCsvUrl || 'https://docs.google.com/spreadsheets/d/1C7Wqh0vY1LjaXToAHaWJRuWM_39mAI9e_4fvhDkcXFU/gviz/tq?tqx=out:csv&sheet=funding';
+    const url = raw.replace(/&amp;/g, '&');
+    if (!url) return;
+    fetch(url)
+      .then((r) => (r.ok ? r.text() : Promise.reject(r.status)))
+      .then((csv) => {
+        const row = csv.split(/\r?\n/).find((l) => /^"?raised"?,/i.test(l.trim()));
+        if (!row) return;
+        const cell = row.split(',')[1] || '';
+        const n = Number(cell.replace(/[^0-9.]/g, ''));
+        if (!isNaN(n) && n > 0) this.setState({ liveRaised: Math.round(n) });
+      })
+      .catch(() => {});
+  }
+  componentWillUnmount() { clearInterval(this.timer); }
+
+  tick() {
+    const target = new Date(this.props.eventDate ?? '2026-10-11T00:00:00+02:00').getTime();
+    this.setState({ diff: Math.max(0, target - Date.now()) });
   }
 
-  retryLoad() {
-    this.setState({ loading: true, loadError: false });
-    this.componentDidMount();
+  eur(n) {
+    return new Intl.NumberFormat('de-DE', { maximumFractionDigits: 0 }).format(n) + ' €';
   }
 
-  async i18n() {
-    if (!this._i18n) this._i18n = await import('./i18n.js');
-    return this._i18n;
-  }
-
-  submitVoteToForm(bookId, action) {
-    const FORM_ACTION = 'https://docs.google.com/forms/d/e/1FAIpQLSdx8UvfZeez9EumAZ21is-w1pAQElvUb9QmMJY8lMpTfSlhow/formResponse';
-    const ENTRY_ID = 'entry.272780057';
-    const ENTRY_ACTION = 'entry.1082019048';
-    const body = new URLSearchParams();
-    body.set(ENTRY_ID, bookId);
-    body.set(ENTRY_ACTION, action);
-    fetch(FORM_ACTION, { method: 'POST', mode: 'no-cors', body }).catch((e) => console.error('Form submit failed:', e));
-  }
-
-  toggleVote(book) {
-    clearTimeout(this._toastTimer);
-    const T = (this._i18n || {}).I18N ? this._i18n.I18N[this.state.pageLang] : null;
-    this.setState((s) => {
-      const t = this._i18n.I18N[s.pageLang];
-      const isOn = !!s.votes[book.id];
-      const activeCount = Object.values(s.votes).filter(Boolean).length;
-      if (!isOn && activeCount >= 5) {
-        return { toastVisible: true, toastMsg: t.limitReached };
-      }
-      const votes = { ...s.votes, [book.id]: !isOn };
-      localStorage.setItem('gbf-votes-v3', JSON.stringify(votes));
-      this.submitVoteToForm(book.id, !isOn ? 'Add' : 'Remove');
-      return { votes, toastVisible: true, toastMsg: !isOn ? t.voteAdded : t.voteRemoved };
-    });
-    this._toastTimer = setTimeout(() => this.setState({ toastVisible: false }), 2400);
-  }
-
-  chipStyleFor(accent, active) {
+  langBtn(active) {
+    const base = 'font-family:Archivo,sans-serif;font-size:0.74rem;font-weight:700;letter-spacing:0.05em;padding:0.34rem 0.72rem;border-radius:999px;border:none;cursor:pointer;transition:all 0.15s';
     return active
-      ? `font-family:Inter;font-size:0.82rem;font-weight:600;border:1.5px solid ${accent};color:#fff;background:${accent};padding:0.4rem 0.9rem;border-radius:999px;cursor:pointer`
-      : `font-family:Inter;font-size:0.82rem;font-weight:600;border:1.5px solid ${accent};color:${accent};background:transparent;padding:0.4rem 0.9rem;border-radius:999px;cursor:pointer`;
-  }
-
-  langPillStyle(accent, active) {
-    return active
-      ? `font-family:Inter;font-size:0.76rem;font-weight:700;border:1.5px solid ${accent};color:#fff;background:${accent};padding:0.32rem 0.8rem;border-radius:999px;cursor:pointer`
-      : `font-family:Inter;font-size:0.76rem;font-weight:600;border:1.5px solid ${accent};color:${accent};background:transparent;padding:0.32rem 0.8rem;border-radius:999px;cursor:pointer`;
-  }
-
-  pageLangBtnStyle(active) {
-    return active
-      ? `font-family:Inter;font-size:0.84rem;font-weight:700;border:none;color:#fff;background:#5D71B3;padding:0.45rem 1.1rem;border-radius:999px;cursor:pointer;letter-spacing:0.01em;box-shadow:0 2px 8px rgba(93,113,179,0.35)`
-      : `font-family:Inter;font-size:0.84rem;font-weight:600;border:none;color:#5A6178;background:transparent;padding:0.45rem 1.1rem;border-radius:999px;cursor:pointer;letter-spacing:0.01em`;
-  }
-
-  pageLangCornerStyle(active) {
-    return active
-      ? `font-family:Inter;font-size:0.72rem;font-weight:700;border:none;color:#fff;background:#5D71B3;padding:0.32rem 0.6rem;border-radius:999px;cursor:pointer`
-      : `font-family:Inter;font-size:0.72rem;font-weight:600;border:none;color:#5A6178;background:transparent;padding:0.32rem 0.6rem;border-radius:999px;cursor:pointer`;
+      ? `${base};background:#ec3b2e;color:#fff`
+      : `${base};background:transparent;color:rgba(23,42,85,0.55)`;
   }
 
   renderVals() {
-    const { pageLang, filter, langFilter, categories, meta, loading, loadError, votes, toastVisible, toastMsg } = this.state;
-    // ensure i18n module is available synchronously for render once loaded
-    if (this._i18nSync === undefined) {
-      this._i18nSync = null;
-      this.i18n().then((m) => { this._i18n = m; this.forceUpdate(); });
-    }
-    const mod = this._i18n;
-    const FALLBACK_T = { eyebrow: '', titlePre: '', titleEm: '', heroP1: '', statTitles: '', statPublishers: '', statCategories: '', allBooks: '', allLangs: '', langGe: 'GE', langEn: 'EN', langDe: 'DE', titlesCount: () => '', voteAdded: '', voteRemoved: '', limitReached: '', footerThanks: '', footerLine: '', loading: 'Loading…', loadError: '' };
-    const T = mod ? mod.I18N[pageLang] : FALLBACK_T;
-    const voteLabel = T.voteLabel || 'Want to read';
-    const voteLabelOn = T.voteLabelOn || 'Want to read ✓';
-    const nameKey = pageLang === 'ge' ? 'nameGe' : pageLang === 'de' ? 'nameDe' : 'nameEn';
+    const lang = this.state.pageLang;
+    const T = STRINGS[lang];
+    const d = this.state.diff;
+    const pad = (n) => String(n).padStart(2, '0');
+    const secs = d === null ? null : Math.floor(d / 1000);
 
-    const loveCount = Object.values(votes).filter(Boolean).length;
+    const raised = this.state.liveRaised ?? Number(this.props.raised ?? 50);
+    const next = MILESTONES.find((m) => m.value > raised) || MILESTONES[MILESTONES.length - 1];
+    const pct = Math.min(100, (raised / next.value) * 100);
 
-    const byCategory = filter === 'all' ? categories : categories.filter((c) => c.id === filter);
-    const visible = byCategory
-      .map((c) => ({ ...c, books: langFilter === 'all' ? c.books : c.books.filter((b) => b.lang === langFilter) }))
-      .filter((c) => c.books.length > 0);
-
-    const pageLangCode = pageLang === 'ge' ? 'GE' : pageLang === 'de' ? 'DE' : 'EN';
-    const decorated = visible.map((c) => ({
-      ...c,
-      catTitle: c[nameKey],
-      countLabel: T.titlesCount(c.books.length),
-      books: [...c.books].sort((a, b) => {
-        const am = a.lang === pageLangCode ? 0 : 1;
-        const bm = b.lang === pageLangCode ? 0 : 1;
-        return am - bm;
-      }).map((b) => {
-        const voted = !!votes[b.id];
-        const atLimit = !voted && loveCount >= 5;
-        return {
-          ...b,
-          hasCover: !!b.coverUrl,
-          langChipStyle: `font-size:0.68rem;font-weight:700;padding:0.12rem 0.5rem;border-radius:5px;letter-spacing:0.03em;background:${b.accent}1A;color:${b.accent}`,
-          toggleVote: () => this.toggleVote(b),
-          voteIcon: voted ? '♥' : '♡',
-          voteLabel: voted ? voteLabelOn : voteLabel,
-          voteBtnStyle: `margin-top:0.7rem;width:100%;border:2px solid ${b.accent};background:${voted ? b.accent : b.accent + '14'};color:${voted ? '#F7F8FB' : b.accent};font-family:'Noto Sans Georgian',sans-serif;font-size:0.88rem;font-weight:700;padding:0.6rem 0.6rem;border-radius:999px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:0.45rem;box-shadow:${voted ? '0 3px 10px ' + b.accent + '55' : 'none'};opacity:${atLimit ? 0.45 : 1}`,
-        };
-      }),
-    }));
-
-    const chips = categories.map((c) => ({
-      id: c.id,
-      title: c[nameKey],
-      accent: c.accent,
-      style: this.chipStyleFor(c.accent, filter === c.id),
-      select: () => this.setState({ filter: c.id }),
-    }));
-
-    const GE_ACCENT = '#C0182D', EN_ACCENT = '#00247D', DE_ACCENT = '#B08A3E', NEUTRAL = '#1F2430';
+    const shareText = `${T.title} — ${T.cta}`;
+    const enc = encodeURIComponent(CAMPAIGN);
 
     return {
-      T,
-      meta,
-      loading,
-      ready: !loading,
-      loadError,
-      retryLoad: () => this.retryLoad(),
-      toastVisible,
-      toastMsg,
-      loveCount,
-      categories: decorated,
-      chips,
-      setPageLangGe: () => this.setState({ pageLang: 'ge' }),
-      setPageLangEn: () => this.setState({ pageLang: 'en' }),
-      setPageLangDe: () => this.setState({ pageLang: 'de' }),
-      pageLangStyle: {
-        ge: this.pageLangBtnStyle(pageLang === 'ge'),
-        en: this.pageLangBtnStyle(pageLang === 'en'),
-        de: this.pageLangBtnStyle(pageLang === 'de'),
+      T: {
+        ...T,
+        gapLine: T.gap(this.eur(Math.max(0, next.value - raised)), this.eur(next.value))
       },
-      pageLangCornerStyle: {
-        ge: this.pageLangCornerStyle(pageLang === 'ge'),
-        en: this.pageLangCornerStyle(pageLang === 'en'),
-        de: this.pageLangCornerStyle(pageLang === 'de'),
-      },
-      selectAll: () => this.setState({ filter: 'all' }),
-      allChipStyle: this.chipStyleFor(NEUTRAL, filter === 'all'),
-      selectLangAll: () => this.setState({ langFilter: 'all' }),
-      selectLangGe: () => this.setState({ langFilter: 'GE' }),
-      selectLangEn: () => this.setState({ langFilter: 'EN' }),
-      selectLangDe: () => this.setState({ langFilter: 'DE' }),
-      notFoundSubmitted: this.state.notFoundSubmitted,
-      notFoundHidden: !this.state.notFoundSubmitted,
-      notFoundModalOpen: this.state.notFoundModalOpen,
-      openNotFound: () => this.setState({ notFoundModalOpen: true }),
-      closeNotFound: () => this.setState({ notFoundModalOpen: false }),
-      closeNotFoundBackdrop: () => this.setState({ notFoundModalOpen: false }),
-      stopPropagation: (e) => e.stopPropagation(),
-      notFoundChipStyle: `font-family:Inter;font-size:0.82rem;font-weight:600;border:1.5px dashed #1F2430;color:#1F2430;background:transparent;padding:0.4rem 0.9rem;border-radius:999px;cursor:pointer`,
-      notFoundText: this.state.notFoundText,
-      setNotFoundText: (e) => this.setState({ notFoundText: e.target.value }),
-      submitNotFound: () => this.submitNotFound(),
-      langOptions: (T.notFoundLangOptions || []).map((label) => {
-        const active = this.state.notFoundLang === label;
+      days: secs === null ? '—' : String(Math.floor(secs / 86400)),
+      hours: secs === null ? '—' : pad(Math.floor(secs / 3600) % 24),
+      minutes: secs === null ? '—' : pad(Math.floor(secs / 60) % 60),
+      seconds: secs === null ? '—' : pad(secs % 60),
+      raisedFmt: this.eur(raised),
+      nextGoalFmt: this.eur(next.value),
+      barStyle: `height:100%;width:${Math.max(1.5, pct)}%;border-radius:999px;background:linear-gradient(90deg,#ec3b2e,#f4685c);transition:width 0.6s ease`,
+      milestones: MILESTONES.map((m) => {
+        const reached = raised >= m.value;
+        const isNext = m.value === next.value && !reached;
         return {
-          label,
-          style: `font-family:Inter;font-size:0.82rem;font-weight:600;border:1.5px solid ${active ? '#5D71B3' : '#DADEEC'};color:${active ? '#fff' : '#3A4256'};background:${active ? '#5D71B3' : '#F7F8FB'};padding:0.42rem 0.85rem;border-radius:999px;cursor:pointer`,
-          select: () => this.setState({ notFoundLang: label }),
+          name: m[lang],
+          amount: this.eur(m.value),
+          cardStyle: `padding:0.95rem 1.05rem;border-radius:12px;background:${isNext ? 'rgba(236,59,46,0.09)' : '#EAF4F9'};border:1px solid ${isNext ? 'rgba(236,59,46,0.35)' : 'rgba(23,42,85,0.08)'}`,
+          nameStyle: `font-family:'Noto Sans Georgian','Archivo',sans-serif;font-size:0.95rem;font-weight:700;color:${isNext ? '#172a55' : 'rgba(23,42,85,0.7)'};margin-bottom:0.3rem`,
+          amountStyle: `font-size:1.15rem;font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:-0.01em;color:${isNext ? '#ec3b2e' : 'rgba(23,42,85,0.45)'}`
         };
       }),
-      collectionOptions: (T.notFoundCollectionOptions || []).map((label) => {
-        const active = this.state.notFoundCollections.includes(label);
-        return {
-          label,
-          style: `font-family:Inter;font-size:0.82rem;font-weight:600;border:1.5px solid ${active ? '#5D71B3' : '#DADEEC'};color:${active ? '#fff' : '#3A4256'};background:${active ? '#5D71B3' : '#F7F8FB'};padding:0.42rem 0.85rem;border-radius:999px;cursor:pointer`,
-          toggle: () => this.setState((s) => ({
-            notFoundCollections: s.notFoundCollections.includes(label)
-              ? s.notFoundCollections.filter((c) => c !== label)
-              : [...s.notFoundCollections, label],
-          })),
-        };
-      }),
-      langAllStyle: this.langPillStyle(NEUTRAL, langFilter === 'all'),
-      langGeStyle: this.langPillStyle(GE_ACCENT, langFilter === 'GE'),
-      langEnStyle: this.langPillStyle(EN_ACCENT, langFilter === 'EN'),
-      langDeStyle: this.langPillStyle(DE_ACCENT, langFilter === 'DE'),
-      filtersOpen: this.state.filtersOpen,
-      filtersOpenStr: this.state.filtersOpen ? 'true' : 'false',
-      toggleFiltersOpen: () => this.setState((s) => ({ filtersOpen: !s.filtersOpen })),
-      filtersSummary: (filter === 'all' ? T.allBooks : chips.find((c) => c.id === filter)?.title || T.allBooks) + '  ·  ' + (langFilter === 'all' ? T.allLangs : langFilter === 'GE' ? T.langGe : langFilter === 'EN' ? T.langEn : T.langDe),
+      langGeStyle: this.langBtn(lang === 'ge'),
+      langEnStyle: this.langBtn(lang === 'en'),
+      langDeStyle: this.langBtn(lang === 'de'),
+      setGe: () => this.setState({ pageLang: 'ge' }),
+      setEn: () => this.setState({ pageLang: 'en' }),
+      setDe: () => this.setState({ pageLang: 'de' }),
+      liUrl: `https://www.linkedin.com/sharing/share-offsite/?url=${enc}`,
+      xUrl: `https://twitter.com/intent/tweet?url=${enc}&text=${encodeURIComponent(shareText)}`,
+      igUrl: 'https://www.instagram.com/gza.europe/',
+      waUrl: `https://wa.me/?text=${encodeURIComponent(shareText + ' ' + CAMPAIGN)}`,
+      tgUrl: `https://t.me/share/url?url=${enc}&text=${encodeURIComponent(shareText)}`,
+      fbUrl: `https://www.facebook.com/sharer/sharer.php?u=${enc}`,
+      copyLabel: this.state.copied ? T.copied : T.copy,
+      copyLink: () => {
+        navigator.clipboard?.writeText(CAMPAIGN);
+        this.setState({ copied: true });
+        setTimeout(() => this.setState({ copied: false }), 1800);
+      }
     };
   }
 }
-
 </script>
 </body>
 </html>

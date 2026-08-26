@@ -32,6 +32,13 @@ function normLang(v) {
   return 'EN';
 }
 
+// Sheet's Language column supports multi-select (checkbox) cells, joined as "GE, DE" etc.
+function normLangs(v) {
+  const parts = (v || '').split(/[,/]/).map((p) => normLang(p)).filter(Boolean);
+  const uniq = [...new Set(parts)];
+  return uniq.length ? uniq : ['GE'];
+}
+
 function slugify(s) {
   return (s || 'other').toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') || 'other';
 }
@@ -88,7 +95,8 @@ function rowsToCategories(rows) {
       order++;
     }
     const cat = catMap.get(catKey);
-    const lang = normLang(row[iLang]);
+    const langs = normLangs(row[iLang]);
+    const lang = langs[0];
     const publisher = (row[iPublisher] || '').trim();
     if (publisher) publishers.add(publisher);
     const idx = cat.books.length;
@@ -99,6 +107,7 @@ function rowsToCategories(rows) {
       slotId: `cv-${slugify(row[iId] || `${catKey}-${idx}`)}`,
       title,
       lang,
+      langs,
       author: (row[iAuthor] || '').trim(),
       publisher,
       description: (row[iDesc] || '').replace(/\s+/g, ' ').trim(),
