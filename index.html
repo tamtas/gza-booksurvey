@@ -34,7 +34,9 @@
 
   <div style="position:sticky;top:0;z-index:30;backdrop-filter:blur(8px);background:rgba(175,214,231,0.94);border-bottom:1px solid rgba(23,42,85,0.09)">
     <div data-pad="1" style="max-width:1000px;margin:0 auto;padding:0.7rem 1.6rem;display:flex;align-items:center;justify-content:space-between;gap:1rem">
-      <div style="font-family:'Noto Sans Georgian','Archivo',sans-serif;font-weight:900;font-size:0.95rem;letter-spacing:0.02em;color:#172a55">GZA</div>
+      <a href="https://www.gzaeurope.org" style="display:block;flex:0 0 auto;line-height:0;text-decoration:none">
+        <img src="gza-logo.png" alt="GZA" width="46" height="46" style="display:block;width:46px;height:46px" />
+      </a>
       <div style="display:inline-flex;gap:0.1rem;padding:0.18rem;background:rgba(23,42,85,0.05);border-radius:999px;border:1px solid rgba(23,42,85,0.09)">
         <button style="{{ langGeStyle }}" onClick="{{ setGe }}">GE</button>
         <button style="{{ langEnStyle }}" onClick="{{ setEn }}">EN</button>
@@ -48,7 +50,9 @@
       <span style="width:6px;height:6px;border-radius:50%;background:#ec3b2e;animation:pulseGlow 2.2s ease-in-out infinite"></span>
       <span>{{ T.eyebrow }}</span>
     </div>
-    <h1 data-hero-h1="1" style="font-family:'Noto Sans Georgian','Archivo',sans-serif;font-weight:900;font-size:3.6rem;line-height:1.02;letter-spacing:-0.035em;margin:0 0 1.6rem;text-wrap:balance;color:#ec3b2e">{{ T.title }}</h1>
+    <h1 style="margin:0 0 1.6rem">
+      <img src="{{ wordmark }}" alt="{{ T.title }}" style="display:block;width:100%;max-width:560px;height:auto;margin:0 auto" />
+    </h1>
     <div style="font-family:'Noto Sans Georgian','Archivo',sans-serif;font-size:1.15rem;font-weight:800;letter-spacing:0.01em;color:#ec3b2e;margin:0 auto 1.1rem">{{ T.dateLine }}</div>
     <div style="font-size:1.05rem;font-weight:500;color:rgba(23,42,85,0.7);margin:0 auto 2.6rem;max-width:none;line-height:1.6;text-wrap:pretty"><span data-intro-line="1" style="display:block;white-space:nowrap">{{ T.body1 }}</span><span data-intro-line="1" style="display:block;white-space:nowrap">{{ T.body2 }}</span></div>
 
@@ -128,7 +132,7 @@ const CAMPAIGN = 'https://www.startnext.com/gza-georgischer-buchtag-berlin';
 const STRINGS = {
   ge: {
     eyebrow: 'კენჭისყრა დასრულდა. ქრაუდფანდინგი დაიწყო.',
-    title: 'ქართული წიგნის დღე ბერლინში',
+    title: 'ქართული წიგნის დღე',
     dateLine: '11 ოქტომბერი · ბერლინი',
     body1: 'ერთად გავხადოთ ეს დღე სახალისო და მრავალფეროვანი.',
     body2: 'დაუჭირეთ მხარი ჩვენს კამპანიას!',
@@ -148,7 +152,7 @@ const STRINGS = {
   },
   en: {
     eyebrow: 'Poll finished. Crowdfunding started.',
-    title: 'Georgian Book Day Berlin',
+    title: 'Georgian Book Day',
     dateLine: '11 October · Berlin',
     body1: "Let's make this day fun and diverse together.",
     body2: 'Support our campaign!',
@@ -168,7 +172,7 @@ const STRINGS = {
   },
   de: {
     eyebrow: 'Abstimmung beendet. Crowdfunding gestartet.',
-    title: 'Georgischer Buchtag Berlin',
+    title: 'Georgischer Buchtag',
     dateLine: '11. Oktober · Berlin',
     body1: 'Machen wir diesen Tag gemeinsam bunt und lebendig.',
     body2: 'Unterstützen Sie unsere Kampagne!',
@@ -255,6 +259,7 @@ class Component extends DCLogic {
     const enc = encodeURIComponent(CAMPAIGN);
 
     return {
+      wordmark: 'gza-wordmark-' + lang + '.png',
       T: {
         ...T,
         gapLine: T.gap(this.eur(Math.max(0, next.value - raised)), this.eur(next.value))
