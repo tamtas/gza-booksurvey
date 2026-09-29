@@ -70,6 +70,7 @@ function rowsToCategories(rows) {
   const iCatEn = findCol(header, 'category en');
   const iCatGe = findCol(header, 'category ge');
   const iCatDe = findCol(header, 'category de');
+  const iShow = findCol(header, 'website', 'show');
 
   const catMap = new Map();
   let order = 0;
@@ -79,6 +80,7 @@ function rowsToCategories(rows) {
     const row = rows[r];
     const title = (row[iTitle] || '').trim();
     if (!title) continue;
+    if (iShow >= 0 && !/yes|true|დიახ|ja/i.test(row[iShow] || '')) continue;
     const catEn = (row[iCatEn] || '').trim();
     const catGe = (row[iCatGe] || '').trim();
     const catDe = (row[iCatDe] || '').trim();
@@ -129,5 +131,5 @@ export async function loadCatalogue() {
   if (rows.length < 2) throw new Error('Sheet returned no rows');
   const { categories, publisherCount } = rowsToCategories(rows);
   const totalBooks = categories.reduce((n, c) => n + c.books.length, 0);
-  return { categories, totalBooks, publisherCount, source: 'sheet' };
+  return { categories, totalBooks, publisherCount, visible: totalBooks > 0, source: 'sheet' };
 }
