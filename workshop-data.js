@@ -6,6 +6,32 @@ const URLS = [
   'https://docs.google.com/spreadsheets/d/' + SHEET_ID + '/gviz/tq?tqx=out:csv&gid=' + GID
 ];
 
+
+// Fills missing EN/DE (or GE) text by machine translation; results cached in the browser.
+const TKEY = 'bbd-tr-v1';
+let tcache = {}; try { tcache = JSON.parse(localStorage.getItem(TKEY) || '{}'); } catch (e) {}
+const isGe = (s) => /[\u10A0-\u10FF]/.test(s || '');
+async function tr(text, tl) {
+  const s = (text || '').trim(); if (!s) return '';
+  const k = tl + '|' + s; if (tcache[k]) return tcache[k];
+  try {
+    const ac = new AbortController(); const t = setTimeout(() => ac.abort(), 5000);
+    const r = await fetch('https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=' + tl + '&dt=t&q=' + encodeURIComponent(s), { signal: ac.signal });
+    clearTimeout(t);
+    const j = await r.json(); const out = (j[0] || []).map((x) => x[0]).join('').trim();
+    if (out) { tcache[k] = out; try { localStorage.setItem(TKEY, JSON.stringify(tcache)); } catch (e) {} return out; }
+  } catch (e) {}
+  return s;
+}
+// { ge, en, de } from whatever is filled in; blanks are translated from the first available.
+async function tri3(ge, en, de) {
+  const src = ge || en || de; if (!src) return null;
+  const geSrc = ge || (isGe(src) ? src : '');
+  const enSrc = en || (!isGe(src) && src !== de ? src : '');
+  const [g, e, d] = await Promise.all([geSrc || tr(src, 'ka'), enSrc || tr(src, 'en'), de || tr(enSrc || src, 'de')]);
+  return { ge: g, en: e, de: d };
+}
+
 function parseCSV(text) {
   const rows = []; let row = [], f = '', q = false;
   for (let i = 0; i < text.length; i++) {
@@ -77,8 +103,9 @@ export async function loadWorkshops() {
     const reg = g(r, 'Registration URL');
     out.push({
       id: g(r, 'ID') || ge || en,
-      title: { ge: ge || en || de, en: en || ge || de, de: de || en || ge },
-      desc: (dge || den || dde) ? { ge: dge || den || dde, en: den || dge || dde, de: dde || den || dge } : null,
+      title: await tri3(ge, en, de),
+      desc: await tri3(dge, den, dde),
+      leaderByLang: await (async (l) => { if (!l || !isGe(l)) return null; const ns = l.split(/\s*,\s*/); const [en, de] = await Promise.all(['en', 'de'].map((t) => Promise.all(ns.map((n) => isGe(n) ? tr(n, t) : n)))); return { ge: l, en: en.join(', '), de: de.join(', ') }; })(g(r, 'Facilitator')),
       date: g(r, 'Date'), time: g(r, 'Time'), room: g(r, 'Venue/Room'), leader: g(r, 'Facilitator'),
       deadline: g(r, 'Deadline'),
       forms: iForms >= 0 ? parseForms((r[iForms] || '').trim()) : null,

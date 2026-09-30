@@ -5,6 +5,32 @@ const GID = '1632004297';
 const URL = 'https://docs.google.com/spreadsheets/d/' + SHEET_ID + '/export?format=csv&gid=' + GID;
 const GVIZ = 'https://docs.google.com/spreadsheets/d/' + SHEET_ID + '/gviz/tq?tqx=out:csv&headers=0&gid=' + GID;
 
+
+// Fills missing EN/DE (or GE) text by machine translation; results cached in the browser.
+const TKEY = 'bbd-tr-v1';
+let tcache = {}; try { tcache = JSON.parse(localStorage.getItem(TKEY) || '{}'); } catch (e) {}
+const isGe = (s) => /[\u10A0-\u10FF]/.test(s || '');
+async function tr(text, tl) {
+  const s = (text || '').trim(); if (!s) return '';
+  const k = tl + '|' + s; if (tcache[k]) return tcache[k];
+  try {
+    const ac = new AbortController(); const t = setTimeout(() => ac.abort(), 5000);
+    const r = await fetch('https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=' + tl + '&dt=t&q=' + encodeURIComponent(s), { signal: ac.signal });
+    clearTimeout(t);
+    const j = await r.json(); const out = (j[0] || []).map((x) => x[0]).join('').trim();
+    if (out) { tcache[k] = out; try { localStorage.setItem(TKEY, JSON.stringify(tcache)); } catch (e) {} return out; }
+  } catch (e) {}
+  return s;
+}
+// { ge, en, de } from whatever is filled in; blanks are translated from the first available.
+async function tri3(ge, en, de) {
+  const src = ge || en || de; if (!src) return null;
+  const geSrc = ge || (isGe(src) ? src : '');
+  const enSrc = en || (!isGe(src) && src !== de ? src : '');
+  const [g, e, d] = await Promise.all([geSrc || tr(src, 'ka'), enSrc || tr(src, 'en'), de || tr(enSrc || src, 'de')]);
+  return { ge: g, en: e, de: d };
+}
+
 function parseCSV(text) {
   const rows = []; let row = [], f = '', q = false;
   for (let i = 0; i < text.length; i++) {
@@ -76,6 +102,7 @@ export async function loadProgram() {
       groups.set(key, {
         date: g(r, C.date), start: g(r, C.start), end: g(r, C.end),
         title: { ge: titleKa || g(r, C.en), en: g(r, C.en) || titleKa, de: g(r, C.de) || g(r, C.en) || titleKa },
+        raw: { ge: titleKa, en: g(r, C.en), de: g(r, C.de) },
         type: tri(g(r, C.type)), room: tri(g(r, C.room)),
         langs: [], speakers: [], description: g(r, C.desc), more: g(r, C.more), form: g(r, C.form)
       });
@@ -92,6 +119,17 @@ export async function loadProgram() {
 
   const toMin = (t) => { const m = /(\d{1,2}):(\d{2})/.exec(t || ''); return m ? +m[1] * 60 + +m[2] : 9999; };
   const out = Array.from(groups.values()).sort((a, b) => (a.date || '').localeCompare(b.date || '') || toMin(a.start) - toMin(b.start));
+  // Titles, descriptions and speaker names in all three languages (the Notes column is internal and never read).
+  await Promise.all(out.map(async (it) => {
+    const t = await tri3(it.raw.ge, it.raw.en, it.raw.de); if (t) it.title = t;
+    const d = it.description;
+    if (d) it.descByLang = isGe(d) ? await tri3(d, '', '') : await tri3('', d, '');
+    if (it.speakers.some(isGe)) {
+      const [en, de] = await Promise.all([Promise.all(it.speakers.map((s) => isGe(s) ? tr(s, 'en') : s)), Promise.all(it.speakers.map((s) => isGe(s) ? tr(s, 'de') : s))]);
+      it.speakersByLang = { ge: it.speakers, en: en, de: de };
+    }
+    delete it.raw;
+  }));
   out.hidden = hiddenKeys.size;
   return out;
 }
