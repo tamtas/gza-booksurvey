@@ -1259,8 +1259,12 @@ class Component extends DCLogic {
               langChipStyle: 'font-size:0.66rem;font-weight:700;padding:0.14rem 0.55rem;border-radius:999px;letter-spacing:0.04em;border:1px solid rgba(23,42,85,0.2);color:#172a55',
               pubStyle: 'font-size:0.72rem;font-weight:600;color:rgba(23,42,85,0.6);text-align:right',
               cover: ok ? React.createElement('img', {
-                src: b.coverUrl, alt: '',
-                onError: () => { badCovers.add(b.coverUrl); this.forceUpdate(); },
+                src: b.coverUrl, alt: '', referrerPolicy: 'no-referrer', loading: 'lazy',
+                onError: (e) => {
+                  const el = e.currentTarget;
+                  if (!el.dataset.proxied) { el.dataset.proxied = '1'; el.src = 'https://images.weserv.nl/?w=500&url=' + encodeURIComponent(b.coverUrl.replace(/^https?:\/\//, '')); return; }
+                  badCovers.add(b.coverUrl); this.forceUpdate();
+                },
                 style: { position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', zIndex: 3 }
               }) : null
             };
