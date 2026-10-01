@@ -53,9 +53,9 @@
       [data-home-hero] { display:flex !important; flex-direction:column; }
       [data-home-hero] > * { order:3; }
       [data-home-hero] > [data-hero-wrap] { order:1; }
-      [data-home-hero] > [data-hero-art] { order:2; position:relative !important; top:0 !important; margin:0.4rem -1.15rem 0.2rem; }
-      [data-hero-h1] { margin-top:0.6rem !important; margin-bottom:0.4rem !important; }
-      [data-hero-mark] { max-width:200px !important; }
+      [data-home-hero] > [data-hero-art] { order:2; position:relative !important; top:0 !important; margin:calc(-9vw) -1.15rem 0.2rem; }
+      [data-hero-h1] { margin-top:0.4rem !important; margin-bottom:0 !important; }
+      [data-hero-mark] { max-width:200px !important; transform:rotate(-12deg) !important; }
       [data-hero-mark][data-hero-lat] { max-width:170px !important; }
       [data-count-grid] { gap:0.45rem !important; }
       [data-count-cell] { padding:0.8rem 0.2rem !important; }
@@ -1002,9 +1002,14 @@ class Component extends DCLogic {
     document.body.appendChild(a); a.click(); a.remove();
   }
 
+  syncHash(tab, lang) {
+    const want = (tab === 'home' && lang === 'ge') ? '' : tab + (lang === 'ge' ? '' : '/' + lang);
+    if (decodeURIComponent(window.location.hash.slice(1)) !== want) history.replaceState(null, '', want ? '#' + want : window.location.pathname + window.location.search);
+  }
+  setLang(l) { this.setState({ pageLang: l }); this.syncHash(this.state.tab, l); }
   goTab(tab, pubFilter) {
     this.setState({ menuOpen: false, tab: tab, pubFilter: pubFilter === undefined ? null : pubFilter, signupFor: null, sent: false, sending: false, formError: '' });
-    if (window.location.hash.slice(1) !== tab) window.location.hash = tab;
+    this.syncHash(tab, this.state.pageLang);
     window.scrollTo(0, 0);
   }
 
@@ -1028,13 +1033,33 @@ class Component extends DCLogic {
 
     // Restore the tab from the URL hash so a refresh stays on the same page.
     const valid = Object.keys(NAV_KEY);
-    const fromHash = window.location.hash.slice(1);
-    if (valid.indexOf(fromHash) >= 0) this.setState({ tab: fromHash });
+    const parse = () => { const [t, l] = decodeURIComponent(window.location.hash.slice(1)).split('/'); return { t: valid.indexOf(t) >= 0 ? t : null, l: ['ge', 'en', 'de'].indexOf(l) >= 0 ? l : null }; };
+    const init = parse();
+    const sm = document.querySelector('meta[name="bbd-start-tab"]');
+    if (!init.t && sm && valid.indexOf(sm.content) >= 0) init.t = sm.content;
+    const lm = document.querySelector('meta[name="bbd-start-lang"]');
+    if (!init.l && lm && ['ge', 'en', 'de'].indexOf(lm.content) >= 0) init.l = lm.content;
+    if (init.t || init.l) this.setState({ ...(init.t ? { tab: init.t } : {}), ...(init.l ? { pageLang: init.l } : {}) });
     this.onHash = () => {
-      const t = window.location.hash.slice(1) || 'home';
-      if (valid.indexOf(t) >= 0 && t !== this.state.tab) this.setState({ tab: t, signupFor: null });
+      const p = parse(), t = p.t || 'home';
+      const ns = {};
+      if (t !== this.state.tab) { ns.tab = t; ns.signupFor = null; }
+      if (p.l && p.l !== this.state.pageLang) ns.pageLang = p.l;
+      if (Object.keys(ns).length) this.setState(ns);
     };
     window.addEventListener('hashchange', this.onHash);
+    this.onMsg = (e) => {
+      let d = e.data; if (typeof d === 'string') { try { d = JSON.parse(d); } catch (_) { d = { tab: d }; } }
+      if (!d || typeof d !== 'object') return;
+      let t = String(d.tab || d.hash || '').replace(/^#/, ''), l = d.lang;
+      if (t.indexOf('/') > 0) { const s = t.split('/'); t = s[0]; l = l || s[1]; }
+      const ns = {};
+      if (valid.indexOf(t) >= 0 && t !== this.state.tab) { ns.tab = t; ns.signupFor = null; }
+      if (['ge', 'en', 'de'].indexOf(l) >= 0 && l !== this.state.pageLang) ns.pageLang = l;
+      if (Object.keys(ns).length) { this.setState(ns); window.scrollTo(0, 0); }
+    };
+    window.addEventListener('message', this.onMsg);
+    try { if (window.parent !== window) window.parent.postMessage({ type: 'bbd-ready' }, '*'); } catch (_) {}
 
     this.loadSheet();
     this.loadProgramSheet();
@@ -1589,9 +1614,9 @@ class Component extends DCLogic {
       langGeStyle: this.langBtn(lang === 'ge'),
       langEnStyle: this.langBtn(lang === 'en'),
       langDeStyle: this.langBtn(lang === 'de'),
-      setGe: () => this.setState({ pageLang: 'ge' }),
-      setEn: () => this.setState({ pageLang: 'en' }),
-      setDe: () => this.setState({ pageLang: 'de' })
+      setGe: () => this.setLang('ge'),
+      setEn: () => this.setLang('en'),
+      setDe: () => this.setLang('de')
     };
   }
 }
