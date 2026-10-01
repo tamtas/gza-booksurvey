@@ -1003,6 +1003,7 @@ class Component extends DCLogic {
   }
 
   syncHash(tab, lang) {
+    try { if (window.parent !== window) window.parent.postMessage({ type: 'bbd-tab', tab: tab, lang: lang }, '*'); } catch (_) {}
     const want = (tab === 'home' && lang === 'ge') ? '' : tab + (lang === 'ge' ? '' : '/' + lang);
     if (decodeURIComponent(window.location.hash.slice(1)) !== want) history.replaceState(null, '', want ? '#' + want : window.location.pathname + window.location.search);
   }
