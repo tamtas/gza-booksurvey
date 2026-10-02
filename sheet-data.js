@@ -71,6 +71,7 @@ function rowsToCategories(rows) {
   const iCatGe = findCol(header, 'category ge');
   const iCatDe = findCol(header, 'category de');
   const iShow = findCol(header, 'website', 'show');
+  const iUrl = findCol(header, 'book_url', 'book url', 'link');
 
   const catMap = new Map();
   let order = 0;
@@ -114,6 +115,7 @@ function rowsToCategories(rows) {
       publisher,
       description: (row[iDesc] || '').replace(/\s+/g, ' ').trim(),
       coverUrl: (row[iImage] || '').trim(),
+      bookUrl: iUrl >= 0 && /^https?:\/\//.test((row[iUrl] || '').trim()) ? row[iUrl].trim() : '',
       accent,
       bg: light ? lighten(accent, 0.55) : accent,
       textColor: light ? '#1F2430' : '#F5F6FA',
