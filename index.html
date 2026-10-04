@@ -572,7 +572,7 @@
       <div data-two="1" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,320px),1fr));gap:0.9rem">
         <sc-for list="{{ publishers }}" as="p" hint-placeholder-count="0">
           <div style="border-radius:16px;background:#fff;border:1px solid rgba(23,42,85,0.1);padding:1.2rem 1.3rem;display:flex;flex-direction:column;gap:0.75rem">
-            <sc-if value="{{ p.logo }}" hint-placeholder-val="{{ false }}"><div style="height:72px;display:flex;align-items:center;justify-content:center;overflow:hidden;font-size:0;padding-bottom:0.4rem;border-bottom:1px solid rgba(23,42,85,0.08)"><a href="{{ p.url }}" target="_blank" rel="noopener" aria-label="{{ p.name }}" style="display:block;line-height:0;transition:transform .15s" style-hover="transform:translateY(-2px)"><img src="{{ p.logo }}" alt="{{ p.name }}" referrerPolicy="no-referrer" style="height:46px;max-width:190px;width:auto;display:block;object-fit:contain;filter:{{ p.logoFilter }};transform:scale({{ p.logoScale }})"></a></div></sc-if>
+            <sc-if value="{{ p.logo }}" hint-placeholder-val="{{ false }}"><div style="height:72px;display:flex;align-items:center;justify-content:center;overflow:hidden;font-size:0;padding-bottom:0.4rem;border-bottom:1px solid rgba(23,42,85,0.08)"><a href="{{ p.url }}" target="_blank" rel="noopener" aria-label="{{ p.name }}" style="display:block;line-height:0;transition:transform .15s" style-hover="transform:translateY(-2px)">{{ p.logoImg }}</a></div></sc-if>
             <div style="display:flex;flex-direction:column;gap:0.55rem">
               <a href="{{ p.url }}" target="_blank" rel="noopener" style="align-self:flex-start;font-family:'Noto Sans Georgian','Archivo',sans-serif;font-size:1.15rem;font-weight:800;color:#172a55;text-decoration:none" style-hover="color:#e83828">{{ p.name }}{{ p.urlArrow }}</a>
               <sc-for list="{{ p.paras }}" as="para" hint-placeholder-count="1">
@@ -1423,10 +1423,17 @@ class Component extends DCLogic {
     const fitCover = (el) => {
       const s = el.style, r = el.naturalWidth / el.naturalHeight;
       // Square/landscape images would lose too much width: show them whole over their blurred backdrop.
-      // Whole cover always visible (no cropping of titles/author names); leftover space takes the book's colour.
-      s.objectFit = 'contain'; s.objectPosition = 'center'; s.filter = 'drop-shadow(0 2px 6px rgba(0,0,0,0.2))';
+      // Close to the frame's shape (≤10% lost): crop to fill. Otherwise show it whole over a blurred copy of itself.
       const fr = el.closest('[data-cover-frame]');
-      if (fr) { if (el.dataset.bg) fr.style.background = el.dataset.bg; Array.prototype.forEach.call(fr.children, (c) => { if (c !== el) c.style.visibility = 'hidden'; }); }
+      const rf = fr && fr.clientHeight ? fr.clientWidth / fr.clientHeight : 0.7;
+      const crop = rf && 1 - Math.min(r / rf, rf / r) <= 0.1;
+      s.objectFit = crop ? 'cover' : 'contain'; s.objectPosition = 'center';
+      s.filter = crop ? 'none' : 'drop-shadow(0 2px 8px rgba(0,0,0,0.28))';
+      if (fr) Array.prototype.forEach.call(fr.children, (c) => {
+        if (c === el) return;
+        if (c.dataset.blur) c.style.visibility = crop ? 'hidden' : 'visible';
+        else c.style.visibility = 'hidden';
+      });
     };
     const catalogue = rawCats
       .map((c, ci) => ({ raw: c, accent: CAT_ACCENTS[ci % CAT_ACCENTS.length] }))
@@ -1472,9 +1479,9 @@ class Component extends DCLogic {
               cover: ok ? React.createElement(React.Fragment, null,
                 // Blurred copy of the cover fills any space left around the full, uncropped cover.
                 React.createElement('img', {
-                  src: b.coverUrl, alt: '', 'aria-hidden': true, referrerPolicy: 'no-referrer', loading: 'lazy',
+                  src: b.coverUrl, alt: '', 'aria-hidden': true, 'data-blur': '1', referrerPolicy: 'no-referrer', loading: 'lazy',
                   onError: (e) => { const el = e.currentTarget; if (!nextSrc(el, 200)) el.style.display = 'none'; },
-                  style: { position: 'absolute', inset: '-12%', width: '124%', height: '124%', objectFit: 'cover', filter: 'blur(14px) saturate(1.15)', zIndex: 2 }
+                  style: { position: 'absolute', inset: '-12%', width: '124%', height: '124%', objectFit: 'cover', filter: 'blur(18px) saturate(1.1)', zIndex: 2, visibility: 'hidden' }
                 }),
                 React.createElement('img', {
                   src: b.coverUrl, alt: '', referrerPolicy: 'no-referrer', loading: 'lazy',
@@ -1483,7 +1490,6 @@ class Component extends DCLogic {
                     if (nextSrc(el, 500)) return;
                     badCovers.add(b.coverUrl); this.forceUpdate();
                   },
-                  'data-bg': bg,
                   ref: (el) => { if (el && el.complete && el.naturalWidth) fitCover(el); },
                   onLoad: (e) => fitCover(e.currentTarget),
                   style: { position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center', zIndex: 3 }
@@ -1769,7 +1775,7 @@ class Component extends DCLogic {
             hasBooks: SHOW_CAT && pubNames.indexOf(name) >= 0,
             viewBooks: () => this.goTab('catalogue', name)
           };
-        });
+        }).map((o) => Object.assign(o, { logoImg: o.logo ? React.createElement('img', { src: o.logo, alt: o.name, referrerPolicy: 'no-referrer', style: { height: 46, maxWidth: 190, width: 'auto', display: 'block', objectFit: 'contain', filter: o.logoFilter, transform: 'scale(' + o.logoScale + ')' } }) : null }));
       })(),
       _oldPublishers: pubNames.map((name) => ({
         name: name,
