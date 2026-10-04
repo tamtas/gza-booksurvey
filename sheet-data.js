@@ -50,6 +50,12 @@ function lighten(hex, amt) {
   return `#${[mix(r), mix(g), mix(b)].map((v) => v.toString(16).padStart(2, '0')).join('')}`;
 }
 
+function pickCover(stable, plain) {
+  const ok = (u) => /^https?:\/\//.test((u || '').trim()) ? u.trim() : '';
+  const a = ok(stable), b = ok(plain);
+  return { coverUrl: a || b, coverFallback: a && b && a !== b ? b : '' };
+}
+
 function findCol(header, ...needles) {
   for (const needle of needles) {
     const i = header.findIndex((h) => h.includes(needle));
@@ -66,7 +72,8 @@ function rowsToCategories(rows) {
   const iAuthor = findCol(header, 'author');
   const iPublisher = findCol(header, 'publisher');
   const iDesc = findCol(header, 'description');
-  const iImage = findCol(header, 'image');
+  const iImageStable = header.findIndex((h) => h.includes('image') && h.includes('stable'));
+  const iImage = header.findIndex((h) => h.includes('image') && !h.includes('stable'));
   const iCatEn = findCol(header, 'category en');
   const iCatGe = findCol(header, 'category ge');
   const iCatDe = findCol(header, 'category de');
@@ -114,7 +121,7 @@ function rowsToCategories(rows) {
       author: (row[iAuthor] || '').trim(),
       publisher,
       description: (row[iDesc] || '').replace(/\s+/g, ' ').trim(),
-      coverUrl: (row[iImage] || '').trim(),
+      ...pickCover(row[iImageStable], row[iImage]),
       bookUrl: iUrl >= 0 && /^https?:\/\//.test((row[iUrl] || '').trim()) ? row[iUrl].trim() : '',
       accent,
       bg: light ? lighten(accent, 0.55) : accent,
