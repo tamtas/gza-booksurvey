@@ -1546,7 +1546,7 @@ class Component extends DCLogic {
         note: { ge: 'მანქანის რეალური მდებარეობა გადამზიდავის GPS-იდან. ბმული აქტიურია 2 ოქტომბრამდე.', en: 'Real-time position of the truck from the carrier’s GPS. Link active until 2 October.', de: 'Echtzeitposition des LKW über das GPS des Spediteurs. Link aktiv bis 2. Oktober.' }[lang]
       },
       onPublishers: tab === 'publishers', onVenue: tab === 'venue', onPress: tab === 'press', onContact: tab === 'contact',
-      wsDeadline: { ge: 'რეგისტრაციის ბოლო ვადა: 7 ოქტომბერი.', en: 'Registration deadline: 7 October.', de: 'Anmeldeschluss: 7. Oktober.' }[lang],
+      wsDeadline: { ge: 'რეგისტრაციის ბოლო ვადა: 9 ოქტომბერი.', en: 'Registration deadline: 9 October.', de: 'Anmeldeschluss: 9. Oktober.' }[lang],
       workshops: (this.state.sheetWorkshops && this.state.sheetWorkshops.length ? this.state.sheetWorkshops.map((s) => ({
         time: [s.date, s.time].filter(Boolean).join(' · '), places: null,
         ge: s.title.ge, en: s.title.en, de: s.title.de, leader: (s.leaderByLang && s.leaderByLang[lang]) || s.leader, desc: s.desc, reg: s.regUrl, forms: s.forms
