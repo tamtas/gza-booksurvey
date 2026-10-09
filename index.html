@@ -35,6 +35,12 @@
   <meta name="ext-resource-dependency" content="./logo-voland-quist.png" data-resource-id="r__logo_voland_quist_png">
   <meta name="ext-resource-dependency" content="./logo-sovlab.png" data-resource-id="r__logo_sovlab_png">
   <meta name="ext-resource-dependency" content="./logo-dagyeli.png" data-resource-id="r__logo_dagyeli_png">
+  <meta name="ext-resource-dependency" content="./logo-zauberberg.png" data-resource-id="r__logo_zauberberg_png">
+  <meta name="ext-resource-dependency" content="./logo-sinatle-melia.png" data-resource-id="r__logo_sinatle_melia_png">
+  <meta name="ext-resource-dependency" content="./press/Georgian-Book-Day-Berlin-2026_Press-Release_EN.pdf" data-resource-id="r__press_Georgian_Book_Day_Berlin_2026_Press_Release_EN_pdf">
+  <meta name="ext-resource-dependency" content="./press/Georgischer-Buchtag-Berlin-2026_Pressemitteilung_DE.pdf" data-resource-id="r__press_Georgischer_Buchtag_Berlin_2026_Pressemitteilung_DE_pdf">
+  <meta name="ext-resource-dependency" content="./logo-kolchis.png" data-resource-id="r__logo_kolchis_png">
+  <meta name="ext-resource-dependency" content="./logo-schiler-muecke.png" data-resource-id="r__logo_schiler_muecke_png">
   <template id="__bundler_thumbnail"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" data-bg-color="#afd6e7"><rect width="100" height="100" fill="#afd6e7"></rect></svg></template>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -143,9 +149,84 @@
       </h1>
       </div>
       
-      <div style="position:relative;z-index:1;font-family:'Noto Sans Georgian','Archivo',sans-serif;font-size:1.15rem;font-weight:800;color:#e83828;margin:0.9rem auto 0.75rem">{{ T.dateLine }}</div><div style="font-size:1.05rem;font-weight:500;color:rgba(23,42,85,0.7);margin:0 auto 2.4rem;max-width:72ch;line-height:1.6;text-wrap:pretty">{{ T.heroBody }}</div>
+      
+      <sc-if value="{{ ssLines }}" hint-placeholder-val="{{ false }}">
+      <div style="position:relative;z-index:1;font-family:'Noto Sans Georgian','Archivo',sans-serif;font-size:1.15rem;font-weight:800;color:#e83828;margin:0.9rem auto 0.75rem">{{ T.dateLine }}</div>
+      <div style="position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:0.4rem;margin:0 auto 1.6rem;color:#172a55">
+        <sc-for list="{{ homeSchedule }}" as="h" hint-placeholder-count="2">
+          <div style="display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:0.2rem 0.6rem;font-size:0.98rem;line-height:1.4"><span style="font-family:'Noto Sans Georgian','Archivo',sans-serif;font-weight:800">{{ h.full }}</span><span style="display:inline-flex;align-items:center;gap:0.3rem;font-weight:700;font-variant-numeric:tabular-nums"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#e83828" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex:0 0 auto"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>{{ h.timeFull }}</span><span style="color:rgba(23,42,85,0.75)">{{ h.what }}</span></div>
+        </sc-for>
+        <a href="{{ venueMapUrl }}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:0.35rem;font-size:0.95rem;text-align:left;color:#172a55;font-weight:600;text-decoration:underline;text-decoration-color:rgba(23,42,85,0.3);text-underline-offset:3px;margin-top:0.15rem" style-hover="color:#e83828;text-decoration-color:#e83828"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#e83828" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex:0 0 auto"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"></path><circle cx="12" cy="9.5" r="2.5"></circle></svg><span><span style="font-weight:800">{{ bothDaysLabel }}:</span> {{ venueAddr }} ↗</span></a>
+      </div>
+      </sc-if>
+      <sc-if value="{{ ssRow }}" hint-placeholder-val="{{ false }}">
+      <div style="position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:0.65rem;margin:1.2rem auto 1.8rem;color:#172a55">
+        <div style="display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:0.5rem 1.4rem">
+          <sc-for list="{{ homeSchedule }}" as="h" hint-placeholder-count="2">
+            <div style="display:flex;align-items:baseline;gap:0.5rem;font-size:1.05rem;line-height:1.3;padding-left:{{ h.padL }};border-left:{{ h.divider }}"><span style="font-family:'Noto Sans Georgian','Archivo',sans-serif;font-weight:500;color:rgba(23,42,85,0.65)">{{ h.wd }}</span><span style="font-family:'Noto Sans Georgian','Archivo',sans-serif;font-weight:800">{{ h.date }}</span><span style="font-family:'Archivo',sans-serif;font-weight:800;color:#e83828;font-variant-numeric:tabular-nums">{{ h.time }}</span></div>
+          </sc-for>
+        </div>
+        <a href="{{ venueMapUrl }}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:0.35rem;font-size:0.95rem;text-align:left;color:#172a55;font-weight:600;text-decoration:underline;text-decoration-color:rgba(23,42,85,0.3);text-underline-offset:3px;font-size:0.9rem" style-hover="color:#e83828;text-decoration-color:#e83828"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#e83828" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex:0 0 auto"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"></path><circle cx="12" cy="9.5" r="2.5"></circle></svg><span><span style="font-weight:800">{{ bothDaysLabel }}:</span> {{ venueAddr }} ↗</span></a>
+      </div>
+      </sc-if>
+      <sc-if value="{{ ssColumns }}" hint-placeholder-val="{{ false }}">
+      <div style="position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:1.1rem;margin:1.3rem auto 1.9rem;color:#172a55">
+        <div style="display:flex;flex-wrap:wrap;justify-content:center;align-items:stretch;row-gap:1rem">
+          <sc-for list="{{ homeSchedule }}" as="h" hint-placeholder-count="2">
+            <div style="display:flex;flex-direction:column;align-items:center;gap:0.2rem;padding:0 2rem;border-left:{{ h.divider }}">
+              <span style="font-size:0.7rem;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;color:rgba(23,42,85,0.55)">{{ h.wd }}</span>
+              <span style="font-family:'Noto Sans Georgian','Archivo',sans-serif;font-size:1.15rem;font-weight:800">{{ h.date }}</span>
+              <span style="font-family:'Archivo',sans-serif;font-size:1.4rem;font-weight:800;letter-spacing:-0.02em;color:#e83828;font-variant-numeric:tabular-nums;line-height:1.15">{{ h.time }}</span>
+              <span style="font-size:0.8rem;color:rgba(23,42,85,0.65)">{{ h.whatNote }}</span>
+            </div>
+          </sc-for>
+        </div>
+        <a href="{{ venueMapUrl }}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:0.35rem;font-size:0.95rem;text-align:left;color:#172a55;font-weight:600;text-decoration:underline;text-decoration-color:rgba(23,42,85,0.3);text-underline-offset:3px;font-size:0.9rem" style-hover="color:#e83828;text-decoration-color:#e83828"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#e83828" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex:0 0 auto"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"></path><circle cx="12" cy="9.5" r="2.5"></circle></svg><span><span style="font-weight:800">{{ bothDaysLabel }}:</span> {{ venueAddr }} ↗</span></a>
+      </div>
+      </sc-if>
+      <sc-if value="{{ ssCardsMin }}" hint-placeholder-val="{{ true }}">
+      <div style="position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:0.85rem;margin:1.2rem auto 1.8rem;color:#172a55">
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:0.6rem;width:100%;max-width:540px">
+          <sc-for list="{{ homeSchedule }}" as="h" hint-placeholder-count="2">
+            <div style="display:flex;flex-direction:column;align-items:center;gap:0.15rem;padding:0.85rem 1rem 0.9rem;border-radius:14px;border:1px solid rgba(23,42,85,0.16);background:rgba(255,255,255,0.4)">
+              <span style="font-size:0.68rem;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;color:rgba(23,42,85,0.55)">{{ h.wd }}</span>
+              <span style="font-family:'Noto Sans Georgian','Archivo',sans-serif;font-size:1.05rem;font-weight:800">{{ h.date }}</span>
+              <span style="font-family:'Archivo',sans-serif;font-size:1.25rem;font-weight:800;letter-spacing:-0.02em;color:#e83828;font-variant-numeric:tabular-nums;line-height:1.2">{{ h.time }}</span>
+              <span style="font-size:0.78rem;color:rgba(23,42,85,0.65);text-align:center">{{ h.whatNote }}</span>
+            </div>
+          </sc-for>
+        </div>
+        <a href="{{ venueMapUrl }}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:0.35rem;font-size:0.9rem;text-align:left;color:#172a55;font-weight:600;text-decoration:underline;text-decoration-color:rgba(23,42,85,0.3);text-underline-offset:3px" style-hover="color:#e83828;text-decoration-color:#e83828"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#e83828" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex:0 0 auto"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"></path><circle cx="12" cy="9.5" r="2.5"></circle></svg><span><span style="font-weight:800">{{ bothDaysLabel }}:</span> {{ venueAddr }} ↗</span></a>
+      </div>
+      </sc-if>
+      <sc-if value="{{ ssCards }}" hint-placeholder-val="{{ false }}">
+      <div data-when-where="1" style="position:relative;z-index:1;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr));gap:0.7rem;max-width:640px;margin:1.2rem auto 1.8rem;text-align:left;color:#172a55">
+        <sc-for list="{{ homeSchedule }}" as="h" hint-placeholder-count="2">
+          <div style="display:flex;flex-direction:column;gap:0.3rem;padding:1rem 1.15rem 1.05rem;border-radius:16px;background:#fff;border:1px solid rgba(23,42,85,0.1);box-shadow:0 6px 18px rgba(23,42,85,0.06)">
+            <div style="display:flex;justify-content:space-between;align-items:baseline;gap:0.6rem">
+              <span style="font-size:0.7rem;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:rgba(23,42,85,0.55)">{{ h.wd }}</span>
+              <span style="font-size:0.78rem;font-weight:700;color:#e83828;text-align:right">{{ h.what }}</span>
+            </div>
+            <div style="font-family:'Noto Sans Georgian','Archivo',sans-serif;font-size:1.3rem;font-weight:800;letter-spacing:-0.01em;line-height:1.2">{{ h.date }}</div>
+            <div style="display:flex;align-items:baseline;flex-wrap:wrap;gap:0.2rem 0.6rem;margin-top:0.1rem">
+              <sc-if value="{{ h.hasTime }}" hint-placeholder-val="{{ true }}"><span style="font-family:'Archivo',sans-serif;font-size:1.5rem;font-weight:800;letter-spacing:-0.02em;font-variant-numeric:tabular-nums;color:#172a55">{{ h.time }}</span></sc-if>
+              <sc-if value="{{ h.hasNote }}" hint-placeholder-val="{{ false }}"><span style="font-size:0.82rem;font-weight:600;color:rgba(23,42,85,0.6)">{{ h.note }}</span></sc-if>
+            </div>
+          </div>
+        </sc-for>
+        <a href="{{ venueMapUrl }}" target="_blank" rel="noopener" style="grid-column:1 / -1;display:flex;align-items:center;gap:0.85rem;padding:0.85rem 1.15rem;border-radius:16px;background:#172a55;color:#fff;text-decoration:none;box-shadow:0 8px 22px rgba(23,42,85,0.18)" style-hover="background:#1f3770">
+          <span style="display:flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:50%;background:#fff;flex:0 0 auto"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#e83828" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex:0 0 auto"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"></path><circle cx="12" cy="9.5" r="2.5"></circle></svg></span>
+          <span style="display:flex;flex-direction:column;gap:0.1rem;min-width:0;flex:1 1 auto">
+            <span style="font-size:0.7rem;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.7)">{{ bothDaysLabel }}</span>
+            <span style="font-size:0.95rem;font-weight:700;line-height:1.35;text-wrap:pretty">{{ venueAddr }}</span>
+          </span>
+          <span aria-hidden="true" style="font-size:1.1rem;font-weight:700;flex:0 0 auto">↗</span>
+        </a>
+      </div>
+      </sc-if><div style="font-size:1.05rem;font-weight:500;color:rgba(23,42,85,0.7);margin:0 auto 2.4rem;max-width:72ch;line-height:1.6;text-wrap:pretty">{{ T.heroBody }}</div>
 
 
+      <sc-if value="{{ showCountdown }}" hint-placeholder-val="{{ true }}">
       <div data-count-grid="1" style="display:grid;grid-template-columns:repeat(4,1fr);gap:0.7rem;max-width:640px;margin:0 auto">
         <sc-for list="{{ countCells }}" as="c" hint-placeholder-count="4">
           <div data-count-cell="1" style="{{ c.cardStyle }}">
@@ -155,6 +236,7 @@
         </sc-for>
       </div>
       <div style="font-size:0.72rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:rgba(23,42,85,0.5);margin-top:0.85rem">{{ T.countdownLabel }}</div>
+      </sc-if>
 
       <div style="display:flex;gap:0.7rem;justify-content:center;flex-wrap:wrap;margin-top:1.9rem">
         <button onClick="{{ goProgram }}" style="padding:1rem 2rem;border-radius:999px;border:none;background:#e83828;color:#fff;font-size:1rem;font-weight:800;cursor:pointer;font-family:'Archivo',sans-serif;box-shadow:0 8px 24px rgba(232,56,40,0.3)" style-hover="background:#c92c1e;transform:translateY(-1px)">{{ T.ctaProgram }}</button>
@@ -192,6 +274,10 @@
                 <sc-if value="{{ d.hasSub }}" hint-placeholder-val="{{ false }}">
                   <span style="font-family:'Archivo',sans-serif;font-size:1.25rem;font-weight:800;letter-spacing:-0.01em;color:#172a55">{{ d.sub }}</span>
                 </sc-if>
+              </div>
+              <div style="display:flex;flex-wrap:wrap;align-items:center;gap:0.4rem 1.2rem;font-size:0.92rem;line-height:1.4;color:#172a55;margin-top:-0.4rem">
+                <sc-if value="{{ d.hasTimes }}" hint-placeholder-val="{{ true }}"><span style="display:inline-flex;align-items:center;gap:0.35rem;font-weight:700;font-variant-numeric:tabular-nums"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#e83828" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex:0 0 auto"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>{{ d.times }}</span></sc-if>
+                <a href="{{ d.mapUrl }}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:0.35rem;color:#172a55;font-weight:600;text-decoration:underline;text-decoration-color:rgba(23,42,85,0.3);text-underline-offset:3px" style-hover="color:#e83828;text-decoration-color:#e83828"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#e83828" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex:0 0 auto"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"></path><circle cx="12" cy="9.5" r="2.5"></circle></svg><span>{{ d.venue }} ↗</span></a>
               </div>
               <sc-if value="{{ d.hasItems }}" hint-placeholder-val="{{ true }}">
                 <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:1.4rem;align-items:start">
@@ -254,13 +340,16 @@
       </sc-if>
               </sc-if>
               <sc-if value="{{ d.hasEvent }}" hint-placeholder-val="{{ false }}">
-                <div style="display:grid;grid-template-columns:64px minmax(0,1fr);gap:0.9rem;align-items:start;padding:0.95rem 1.1rem;border-radius:14px;background:#fff;border:1px solid rgba(23,42,85,0.1);margin-bottom:0.7rem">
+                <div style="position:relative;display:grid;grid-template-columns:64px minmax(0,1fr);gap:0.9rem;align-items:start;padding:0.95rem 1.1rem;border-radius:14px;background:#fff;border:1px solid rgba(23,42,85,0.1);margin-bottom:0.7rem">
+<button onClick="{{ liveAddCal }}" title="{{ liveCalLabel }}" aria-label="{{ liveCalLabel }}" style="position:absolute;top:0.95rem;right:1.1rem;width:30px;height:30px;padding:0;border-radius:999px;border:1px solid rgba(23,42,85,0.18);background:transparent;color:#172a55;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s" style-hover="background:#172a55;color:#fff;border-color:#172a55">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3.5" y="5" width="17" height="15" rx="2"></rect><path d="M3.5 9.5h17M8 3v4M16 3v4M12 12.5v5M9.5 15h5"></path></svg>
+                    </button>
                   <div style="display:flex;flex-direction:column;gap:0.15rem;font-variant-numeric:tabular-nums;padding-top:0.1rem">
                     <span style="font-size:1rem;font-weight:800;color:#e83828">19:00</span>
                     <span style="font-size:0.8rem;font-weight:600;color:rgba(23,42,85,0.5)">{{ live.doors }}</span>
                   </div>
                   <div style="min-width:0">
-                    <div style="font-family:'Noto Sans Georgian','Archivo',sans-serif;font-size:1.02rem;font-weight:700;color:#172a55;margin-bottom:0.3rem;text-wrap:pretty">{{ live.title }}</div>
+                    <div style="font-family:'Noto Sans Georgian','Archivo',sans-serif;font-size:1.02rem;font-weight:700;color:#172a55;margin-bottom:0.3rem;padding-right:2.4rem;text-wrap:pretty">{{ live.title }}</div>
                     
                     <div data-guest-row="1" style="display:flex;flex-wrap:wrap;align-items:center;gap:0.8rem 3rem;margin-bottom:0.6rem"><div data-lineup="1" style="display:flex;flex-direction:column;gap:0.2rem;flex:0 1 auto;min-width:min(100%,max-content)">
                       <sc-for list="{{ live.lineup }}" as="m" hint-placeholder-count="4">
@@ -599,13 +688,18 @@
       <h2 style="font-family:'Caveat Brush','Noto Sans Georgian',cursive;font-size:clamp(1.8rem, 8vw, 2.6rem);overflow-wrap:anywhere;font-weight:800;font-synthesis:none;letter-spacing:0;margin:0 0 0.45rem;color:#172a55">{{ T.navVenue }}</h2>
       <div style="font-size:1rem;color:rgba(23,42,85,0.65);max-width:60ch;line-height:1.55;margin-bottom:1.5rem;text-wrap:pretty">{{ T.venueIntro }}</div>
       <div style="border-radius:18px;overflow:hidden;border:1px solid rgba(23,42,85,0.12);background:#fff;box-shadow:0 10px 30px rgba(23,42,85,0.1)">
-        <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:1rem 1.5rem;padding:1.3rem 1.5rem;background:#172a55">
+        <div style="position:relative;z-index:1;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:1rem 1.5rem;padding:1.3rem 1.5rem;background:#172a55">
           <div style="display:flex;align-items:center;gap:1rem;min-width:0">
             <img src="./hotel-continental-logo-white.png" alt="Hotel Continental – Art Space in Exile" style="display:block;height:56px;width:auto;flex:0 0 auto">
             <div style="display:flex;flex-direction:column;gap:0.35rem;min-width:0">
               <div style="font-family:'Archivo',sans-serif;font-size:1.45rem;font-weight:800;letter-spacing:-0.02em;line-height:1.15;color:#fff;text-wrap:balance">Hotel Continental – Art Space in Exile</div>
               <div style="font-size:0.95rem;font-weight:600;color:#fff">Elsenstraße 87, 12435 Berlin</div>
             </div>
+          </div>
+          <div style="display:flex;flex-wrap:wrap;gap:0.5rem">
+            <a href="{{ venueMapUrl }}" target="_blank" rel="noopener" style="padding:0.6rem 1.1rem;border-radius:999px;font-size:0.85rem;font-weight:700;cursor:pointer;font-family:'Noto Sans Georgian','Archivo',sans-serif;white-space:nowrap;text-decoration:none;border:1px solid #e83828;background:#e83828;color:#fff">{{ vOpenMaps }} ↗</a>
+            <button onClick="{{ copyVenueAddr }}" style="padding:0.6rem 1.1rem;border-radius:999px;font-size:0.85rem;font-weight:700;cursor:pointer;font-family:'Noto Sans Georgian','Archivo',sans-serif;white-space:nowrap;text-decoration:none;border:1px solid rgba(255,255,255,0.6);background:transparent;color:#fff" style-hover="background:rgba(255,255,255,0.12)">{{ vCopyLabel }}</button>
+            <button onClick="{{ shareVenue }}" style="padding:0.6rem 1.1rem;border-radius:999px;font-size:0.85rem;font-weight:700;cursor:pointer;font-family:'Noto Sans Georgian','Archivo',sans-serif;white-space:nowrap;text-decoration:none;border:1px solid rgba(255,255,255,0.6);background:transparent;color:#fff" style-hover="background:rgba(255,255,255,0.12)">{{ vShareLabel }}</button>
           </div>
         </div>
         <div style="position:relative;height:380px;overflow:hidden">
@@ -625,14 +719,14 @@
       <h2 style="font-family:'Caveat Brush','Noto Sans Georgian',cursive;font-size:clamp(1.8rem, 8vw, 2.6rem);overflow-wrap:anywhere;font-weight:800;font-synthesis:none;letter-spacing:0;margin:0 0 0.45rem;color:#172a55">{{ T.navPress }}</h2>
       <div style="font-size:1rem;color:rgba(23,42,85,0.65);max-width:60ch;line-height:1.55;margin-bottom:1.5rem;text-wrap:pretty">{{ T.pressIntro }}</div>
       <div style="display:flex;flex-direction:column;gap:0.6rem">
-        <sc-for list="{{ pressItems }}" as="i" hint-placeholder-count="3">
-          <div style="display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:1.15rem 1.4rem;border-radius:14px;background:#fff;border:1px solid rgba(23,42,85,0.1)">
-            <div>
+        <sc-for list="{{ pressItems }}" as="i" hint-placeholder-count="2">
+          <a href="{{ i.href }}" download="{{ i.file }}" target="_blank" rel="noopener" style="display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:1.15rem 1.4rem;border-radius:14px;background:#fff;border:1px solid rgba(23,42,85,0.1);text-decoration:none;color:#172a55" style-hover="border-color:#e83828">
+            <div style="min-width:0">
               <div style="font-size:1rem;font-weight:700;color:#172a55;margin-bottom:0.2rem">{{ i.name }}</div>
-              <div style="font-size:0.82rem;color:rgba(23,42,85,0.5)">{{ i.meta }}</div>
+              <div style="font-size:0.82rem;color:rgba(23,42,85,0.55)">{{ i.meta }}</div>
             </div>
-            <div style="font-size:0.8rem;font-weight:700;color:rgba(23,42,85,0.3);white-space:nowrap">{{ T.soon }}</div>
-          </div>
+            <span style="display:inline-flex;align-items:center;gap:0.4rem;padding:0.5rem 1rem;border-radius:999px;background:#e83828;color:#fff;font-size:0.82rem;font-weight:700;white-space:nowrap;font-family:'Noto Sans Georgian','Archivo',sans-serif"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"></path></svg>{{ i.cta }}</span>
+          </a>
         </sc-for>
       </div>
     </div>
@@ -683,7 +777,7 @@
   </div>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props="{&quot;eventDate&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;2026-10-11T00:00:00+02:00&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;showCountdown&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;},&quot;signupFormUrl&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Workshop sign-up&quot;},&quot;entryName&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Workshop sign-up&quot;},&quot;entryEmail&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Workshop sign-up&quot;},&quot;entryWorkshop&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Workshop sign-up&quot;},&quot;entryLevel&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Workshop sign-up&quot;},&quot;entryAge&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Workshop sign-up&quot;},&quot;entryNotes&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Workshop sign-up&quot;},&quot;signupScriptUrl&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Registration&quot;}}">
+<script type="text/x-dc" data-dc-script data-props="{&quot;scheduleStyle&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;lines&quot;,&quot;row&quot;,&quot;columns&quot;,&quot;cards-minimal&quot;,&quot;cards&quot;],&quot;default&quot;:&quot;cards-minimal&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Home: dates &amp; venue&quot;},&quot;eventDate&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;2026-10-11T00:00:00+02:00&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;showCountdown&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;},&quot;signupFormUrl&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Workshop sign-up&quot;},&quot;entryName&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Workshop sign-up&quot;},&quot;entryEmail&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Workshop sign-up&quot;},&quot;entryWorkshop&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Workshop sign-up&quot;},&quot;entryLevel&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Workshop sign-up&quot;},&quot;entryAge&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Workshop sign-up&quot;},&quot;entryNotes&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Workshop sign-up&quot;},&quot;signupScriptUrl&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Registration&quot;}}">
 const STRINGS = {
   ge: {
     title: 'ქართული წიგნის დღე',
@@ -717,7 +811,7 @@ const STRINGS = {
     publishersIntro: 'გამომცემლობები და ექსპონენტები, რომლებიც მონაწილეობენ ღონისძიებაში.',
     viewBooks: 'წიგნების ნახვა',
     venueIntro: 'როგორ მოხვდეთ ღონისძიებაზე.',
-    pressIntro: 'მასალები მედიისთვის: პრეს-რელიზი, ფოტოები, ლოგოები.',
+    pressIntro: 'პრეს-რელიზი მედიისთვის.',
     soon: 'მალე',
     contactIntro: 'დაგვიკავშირდით შეკითხვებით ან თანამშრომლობის შესახებ.',
     newsTitle: 'გამოიწერეთ ჩვენი სიახლეები',
@@ -758,7 +852,7 @@ const STRINGS = {
     publishersIntro: 'The publishers and exhibitors taking part.',
     viewBooks: 'View books',
     venueIntro: 'How to find us on the day.',
-    pressIntro: 'Materials for media: press release, photos, logos.',
+    pressIntro: 'Press release for media.',
     soon: 'Soon',
     contactIntro: 'Get in touch with questions or about taking part.',
     newsTitle: 'Subscribe to our newsletter',
@@ -799,7 +893,7 @@ const STRINGS = {
     publishersIntro: 'Die teilnehmenden Verlage und Aussteller.',
     viewBooks: 'Bücher ansehen',
     venueIntro: 'So finden Sie uns am Veranstaltungstag.',
-    pressIntro: 'Material für Medien: Pressemitteilung, Fotos, Logos.',
+    pressIntro: 'Pressemitteilung für Medien.',
     soon: 'Bald',
     contactIntro: 'Schreiben Sie uns bei Fragen oder zur Teilnahme.',
     newsTitle: 'Newsletter abonnieren',
@@ -821,7 +915,7 @@ const LIVE_TEXT = {
   ge: {
     doors: 'კარი 18:00',
     title: 'დახურვის საღამო',
-    info: [{ isPin: true, href: LIVE_MAP, k: 'სად', v: LIVE_ADDR }, { isTix: true, k: 'შესვლა', v: 'უფასო · შემოწირულობა სასურველია' }],
+    info: [{ isPin: true, href: LIVE_MAP, k: 'სად', v: LIVE_ADDR }, { isTix: true, k: 'შესვლა', v: 'შესვლა თავისუფალია, შემოწირულობა სასურველი' }],
     intro: 'მოხარულები ვართ, რომ მიღებული მხარდაჭერის წყალობით ქართული წიგნის დღეს ბერლინში განსაკუთრებული საღამოთი დავასრულებთ.',
     lineup: [{ n: 'რეზო კიკნაძე', r: 'საქსოფონი, ელექტრონიკა' }, { n: 'გურამ მაჭავარიანი', r: 'გიტარა' }, { n: 'ანუკა კონტრიძე', r: 'ტაბლა' }, { n: 'MAWIL(SCHWILI)', r: 'ილუსტრატორი, ცოცხალი ხატვა' }],
     guest: { label: 'ახალი ჟღერადობა ქართულ-გერმანულ თანამშრომლობაში', n: 'Rainer Frey', r: 'გიტარა' },
@@ -937,7 +1031,21 @@ const PUB_INFO = [
     ge: ["საბჭოთა წარსულის კვლევის ლაბორატორია (სოვლაბი) წამყვანი არასამთავრობო ორგანიზაციაა, რომელიც ავითარებს მეხსიერების პოლიტიკას საქართველოში და ებრძვის რუსული დეზინფორმაციის მიერ მეხსიერების იარაღად გამოყენებას.","2009 წელს, DVV international-ისა და ჰაინრიჰ ბიოლის ფონდის მიერ ორგანიზებული საერთაშორისო კონფერენციის ფარგლებში, ჩამოყალიბდა საინიციატივო ჯგუფი, რომელმაც მიზნად დაისახა სტალინიზმის, ტერორის და რეპრესიების ტოპოგრაფის თემის დამუშავება და კვლევების დაწყება თბილისში საბჭოთა ტერორის და რეპრესიების შესახებ დოკუმენტური, საგანმანათლებლო მარშრუტის შესაქმნელად. მოგვიანებით, 2010 წლის მარტში კი საბჭოთა წარსულის კვლევის ლაბორატორია დაფუძნდა. ორგანიზაცია ლაშა ბაქრაძემ, დავით გოგოშვილმა, გიორგი კლდიაშვილმა, ნინო ლეჟავამ, ანა მარგველაშვილმა, გიორგი შაიშმელაშვილმა და დავით ჯიშკარიანმა დააარსეს. მას შემდეგ, რამდენჯერმე შეიცვალა სოვლაბის ბორდი.","2010 წლიდან დღემდე, სოვლაბმა არაერთი კვლევა აწარმოა უახლესი ისტორიის საკვანძო საკითხებზე, რომლებიც საბჭოთა პროპაგანდის მიერ დამახინჯებული ან გამქრალი იყო ქართული საზოგადოების კოლექტიური მეხსიერებიდან. საკითხები, რომლებსაც ორგანიზაცია შეეხო, მოიცავს საქართველოს დემოკრატიული რესპუბლიკისა და მისი დემოკრატიული ინსტიტუტების მემკვიდრეობას, საბჭოთა რუსეთის შემოჭრას და შემდგომ ოკუპაციას, ორგანიზებულ ანტისაბჭოთა წინააღმდეგობას, ტოტალიტარულ ტერორს, პოსტსტალინურ ეპოქას და გვიან-საბჭოთა პერიოდს - დამოუკიდებლობის აღდგენამდე.","სოვლაბმა გამოსცა 20-ზე მეტი წიგნი და გამოაქვეყნა მრავალი სტატია, უმასპინძლა კონფერენციებს, დისკუსიებს, ტრენინგებს, ფილმების ჩვენებებსა თუ გამოფენებს. გარდა ამისა, ჩვენ გავაციფრულეთ მრავალი საარქივო და აუდიოვიზუალური მასალა და ხელმისაწვდომი გავხადეთ ფართო საზოგადოებისთვის.","2022 წელს სოვლაბი შეუერთდა ინფორმაციის სანდოობის კოალიციას, არასამთავრობო ორგანიზაციების ინიციატივას, რომელიც მიზნად ისახავს დეზინფორმაციის წინააღმდეგ ქართული საზოგადოების მდგრადობის გაზრდას და ხელს უწყობს ინფორმირებული და ძლიერი საზოგადოების ჩამოყალიბებას.","2021 წელს რუსეთის საგარეო საქმეთა სამინისტრომ სოვლაბი „ისტორიის გამყალბებელ“ ორგანიზაციად გამოაცხადა - ეს ჩვენი საქმის აღიარებაა და ერთგვარი „ღირსების ორდენია“. 2022 წელს კი ევროპარლამენტის საგარეო ურთიერთობათა კომიტეტმა დაუჭირა მხარი სოვლაბის ძალისხმევას და ხაზი გაუსვა ჩვენი მისიის მნიშვნელობასა და სანდოობას."],
     en: ["The Soviet Past Research Laboratory (SovLab) is a leading non-governmental organisation that develops memory politics in Georgia and counters the weaponisation of memory by Russian disinformation.","In 2009, during an international conference organised by DVV International and the Heinrich Böll Foundation, an initiative group formed with the aim of studying the topography of Stalinism, terror and repression, and of starting research towards a documentary, educational route about Soviet terror and repression in Tbilisi. The Soviet Past Research Laboratory was then founded in March 2010. Its founders were Lasha Bakradze, Davit Gogoshvili, Giorgi Kldiashvili, Nino Lezhava, Ana Margvelashvili, Giorgi Shaishmelashvili and Davit Jishkariani. SovLab's board has changed several times since.","Since 2010, SovLab has carried out numerous research projects on key questions of recent history that Soviet propaganda distorted or erased from Georgian society's collective memory. Topics include the legacy of the Democratic Republic of Georgia and its democratic institutions, Soviet Russia's invasion and subsequent occupation, organised anti-Soviet resistance, totalitarian terror, the post-Stalin era and the late Soviet period up to the restoration of independence.","SovLab has published more than 20 books and many articles, and has hosted conferences, discussions, trainings, film screenings and exhibitions. We have also digitised a large amount of archival and audiovisual material and made it accessible to the wider public.","In 2022, SovLab joined the Information Integrity Coalition, an initiative of non-governmental organisations that aims to strengthen Georgian society's resilience against disinformation and supports the development of an informed and strong society.","In 2021, the Russian Ministry of Foreign Affairs declared SovLab a \"falsifier of history\" – a recognition of our work and a kind of \"order of honour\". In 2022, the European Parliament's Committee on Foreign Affairs supported SovLab's efforts and underlined the importance and credibility of our mission."],
     de: ["Das Labor zur Erforschung der sowjetischen Vergangenheit (SovLab) ist eine führende Nichtregierungsorganisation, die Erinnerungspolitik in Georgien entwickelt und der Instrumentalisierung von Erinnerung durch russische Desinformation entgegentritt.","2009 bildete sich im Rahmen einer internationalen Konferenz, organisiert von DVV International und der Heinrich-Böll-Stiftung, eine Initiativgruppe, die sich zum Ziel setzte, die Topographie von Stalinismus, Terror und Repression zu erarbeiten und Forschungen für eine dokumentarische, pädagogische Route über sowjetischen Terror und Repression in Tiflis zu beginnen. Im März 2010 wurde schließlich das Labor zur Erforschung der sowjetischen Vergangenheit gegründet. Gründer waren Lascha Bakradse, Dawit Gogoschwili, Giorgi Kldiaschwili, Nino Leschawa, Ana Margwelaschwili, Giorgi Schaischmelaschwili und Dawit Dschischkariani. Seitdem hat sich der Vorstand von SovLab mehrmals geändert.","Seit 2010 hat SovLab zahlreiche Forschungen zu Schlüsselfragen der jüngsten Geschichte durchgeführt, die von der sowjetischen Propaganda verzerrt oder aus dem kollektiven Gedächtnis der georgischen Gesellschaft getilgt wurden. Dazu gehören das Erbe der Demokratischen Republik Georgien und ihrer demokratischen Institutionen, der Einmarsch Sowjetrusslands und die anschließende Besatzung, der organisierte antisowjetische Widerstand, der totalitäre Terror, die poststalinistische Ära und die spätsowjetische Zeit bis zur Wiederherstellung der Unabhängigkeit.","SovLab hat mehr als 20 Bücher und zahlreiche Artikel veröffentlicht sowie Konferenzen, Diskussionen, Trainings, Filmvorführungen und Ausstellungen ausgerichtet. Außerdem haben wir umfangreiches Archiv- und audiovisuelles Material digitalisiert und der breiten Öffentlichkeit zugänglich gemacht.","2022 trat SovLab der Koalition für Informationsintegrität bei, einer Initiative von Nichtregierungsorganisationen, die die Widerstandsfähigkeit der georgischen Gesellschaft gegen Desinformation stärken will und die Entwicklung einer informierten und starken Gesellschaft fördert.","2021 erklärte das russische Außenministerium SovLab zu einer „Geschichtsfälscher“-Organisation – eine Anerkennung unserer Arbeit und eine Art „Ehrenorden“. 2022 unterstützte der Auswärtige Ausschuss des Europäischen Parlaments die Bemühungen von SovLab und betonte die Bedeutung und Glaubwürdigkeit unserer Mission."]
-  } }
+  } },
+  {"url":"https://www.facebook.com/alonipublishing/","match":["aloni","ალონ"],"ge":"გამომცემლობა ალონი","en":"Aloni Publishing","de":"Aloni Verlag","text":{"ge":["„ალონი“ თბილისში მოქმედი ქართული გამომცემლობაა, რომლის გამოცემებშიც მნიშვნელოვანი ადგილი უჭირავს თარგმნილ ლიტერატურას."],"en":["Aloni is a Tbilisi-based Georgian publisher whose list gives a prominent place to literature in translation."],"de":["Aloni ist ein georgischer Verlag mit Sitz in Tiflis, dessen Programm übersetzter Literatur einen wichtigen Platz einräumt."]}},
+  {"url":"https://www.kolchisverlag.ch/","logo":"./logo-kolchis.png","match":["kolchis"],"ge":"Kolchis Verlag","en":"Kolchis Verlag","de":"Kolchis Verlag","text":{"ge":["Kolchis შვეიცარიული გამომცემლობაა (რემეტშვილი, არგაუს კანტონი). მისი პროგრამის ცენტრშია სამხრეთ ბალკანეთის, თურქეთის, ახლო აღმოსავლეთის, ცენტრალური აზიისა და კავკასიის, მათ შორის საქართველოს, ლიტერატურა და არამხატვრული წიგნები. გერმანულად გამოსცა თამთა მელაშვილის რომანი."],"en":["Kolchis is a Swiss publisher based in Remetschwil. Its list focuses on fiction and non-fiction from and about the southern Balkans, Turkey, the Middle East, Central Asia and the Caucasus, including Georgia. It published Tamta Melashvili’s novel in German."],"de":["Kolchis ist ein Schweizer Verlag mit Sitz in Remetschwil. Der Schwerpunkt liegt auf Belletristik und Sachbüchern aus und über Südbalkan, Türkei, Nahen Osten, Zentralasien und Kaukasus, darunter Georgien. Auf Deutsch erschien hier Tamta Melaschwilis Roman."]}},
+  {"url":"https://schiler-muecke.de/","logo":"./logo-schiler-muecke.png","match":["schiler"],"ge":"Schiler & Mücke","en":"Schiler & Mücke","de":"Schiler & Mücke","text":{"ge":["Schiler & Mücke ტიუბინგენსა და ბერლინში მოქმედი დამოუკიდებელი გამომცემლობაა. პროგრამის მნიშვნელოვანი ნაწილია პოეზია (ხშირად ორენოვანი გამოცემებით), ემიგრაციისა და დევნილობის ლიტერატურა, არაბული ლიტერატურა გერმანულ თარგმანში და არამხატვრული წიგნები ახლო აღმოსავლეთის შესახებ."],"en":["Schiler & Mücke is an independent publisher based in Tübingen and Berlin. Its list centres on poetry (often in bilingual editions), literature of exile and migration, Arabic literature in German translation, and non-fiction on the Middle East."],"de":["Schiler & Mücke ist ein unabhängiger Verlag mit Sitz in Tübingen und Berlin. Schwerpunkte sind Lyrik (oft zweisprachig), Exil- und Migrationsliteratur, arabische Literatur in deutscher Übersetzung sowie Sachbücher zum Nahen Osten."]}},
+  {"url":"https://edition-orient.de/","match":["edition orient"],"ge":"Edition Orient","en":"Edition Orient","de":"Edition Orient","text":{"ge":["Edition Orient 1980 წელს ბერლინში მთარგმნელ ნაგი ნაგიბის ინიციატივით დაარსდა. გამომცემლობა გერმანულად სცემს არაბული, სპარსული და თურქული კულტურული სივრცის ლიტერატურას, ბოლო წლებში კი განსაკუთრებით ორენოვან და მრავალენოვან საბავშვო წიგნებს. 2021 და 2024 წლებში მიიღო გერმანიის გამომცემლობის პრემია."],"en":["Edition Orient was founded in Berlin in 1980 on the initiative of translator Nagi Naguib. It publishes literature from the Arabic, Persian and Turkish-speaking worlds in German, and in recent years especially bilingual and multilingual children’s books. It received the German Publishers’ Prize in 2021 and 2024."],"de":["Edition Orient wurde 1980 auf Initiative des Übersetzers Nagi Naguib in Berlin gegründet. Der Verlag veröffentlicht Literatur aus dem arabischen, persischen und türkischen Kulturraum, in den letzten Jahren vor allem zwei- und mehrsprachige Kinderbücher. Er wurde 2021 und 2024 mit dem Deutschen Verlagspreis ausgezeichnet."]}},
+  {"url":"https://www.aviva-verlag.de/","match":["aviva"],"ge":"AvivA Verlag","en":"AvivA Verlag","de":"AvivA Verlag","text":{"ge":["AvivA Verlag 1997 წელს ლიტერატურათმცოდნემ და ხელოვნებათმცოდნემ ბრიტა იურგსმა დააარსა ბერლინში. პროგრამის ცენტრშია 1920-30-იანი წლების ხელახლა აღმოჩენილი ავტორი ქალები, ქალები ხელოვნებაში და კულტურის ისტორია. გამოსცემს ქართველი მწერლის სალომე ბენიძის წიგნებსაც."],"en":["AvivA Verlag was founded in Berlin in 1997 by literary scholar and art historian Britta Jürgs. Its list focuses on rediscovered women writers of the 1920s and 1930s, women in art, and cultural history. It also publishes the Georgian writer Salome Benidze."],"de":["Der AvivA Verlag wurde 1997 von der Literaturwissenschaftlerin und Kunsthistorikerin Britta Jürgs in Berlin gegründet. Schwerpunkte sind wiederentdeckte Schriftstellerinnen der 1920er- und 1930er-Jahre, Frauen in der Kunst und Kulturgeschichte. Im Programm ist auch die georgische Autorin Salome Benidze."]}},
+  {"url":"https://www.gansverlag.de/","match":["gans verlag","gans"],"ge":"Gans Verlag","en":"Gans Verlag","de":"Gans Verlag","text":{"ge":["Gans Verlag 2016 წელს ბერლინში ულრიხ ლაინცმა დააარსა. დამოუკიდებელი გამომცემლობა სცემს ლიტერატურას, ისტორიასა და სამეცნიერო წიგნებს; პოეზია პროგრამის მუდმივი ნაწილია. სახელი იურისტ ედუარდ განსს (1797–1839) ეძღვნება."],"en":["Gans Verlag was founded in Berlin in 2016 by Ulrich Leinz. The independent house publishes literature, history and scholarly books, with poetry a fixed part of its list. It is named after the jurist Eduard Gans (1797–1839)."],"de":["Der Gans Verlag wurde 2016 von Ulrich Leinz in Berlin gegründet. Der unabhängige Verlag veröffentlicht Literatur, Geschichte und Wissenschaft; Lyrik ist fester Bestandteil des Programms. Benannt ist er nach dem Juristen Eduard Gans (1797–1839)."]}},
+  {"url":"https://www.verbrecherverlag.de/","match":["verbrecher"],"ge":"Verbrecher Verlag","en":"Verbrecher Verlag","de":"Verbrecher Verlag","text":{"ge":["Verbrecher Verlag ბერლინში მოქმედი დამოუკიდებელი გამომცემლობაა, რომელიც 1995 წლიდან სცემს თანამედროვე ლიტერატურას, ესეისტიკას და ხელახლა აღმოჩენილ ტექსტებს. მის გამოცემებს შორისაა ქართველი პოეტის ბელა ჩეკურიშვილის კრებული."],"en":["Verbrecher Verlag is an independent Berlin publisher that has brought out contemporary literature, essays and rediscovered texts since 1995. Its list includes a collection by the Georgian poet Bela Chekurishvili."],"de":["Der Verbrecher Verlag ist ein unabhängiger Berliner Verlag, der seit 1995 Gegenwartsliteratur, Essays und Wiederentdeckungen veröffentlicht. Im Programm ist auch ein Band der georgischen Dichterin Bela Chekurishvili."]}},
+  {"url":"https://www.aufbau-verlage.de/","match":["aufbau"],"ge":"Aufbau Verlag","en":"Aufbau Verlag","de":"Aufbau Verlag","text":{"ge":["Aufbau 1945 წლის 16 აგვისტოს ბერლინში დაარსდა და მეორე მსოფლიო ომის შემდეგ ერთ-ერთმა პირველმა მხატვრული ლიტერატურის გამომცემლობამ მიიღო ლიცენზია. გდრ-ში ყველაზე დიდი ლიტერატურული გამომცემლობა იყო. თავიდანვე სცემდა კლასიკას, მსოფლიო ლიტერატურას და ემიგრანტ ავტორებს, მათ შორის ჰანს ფალადას, ანა ზეგერსს და ლიონ ფოიხტვანგერს."],"en":["Aufbau was founded in Berlin on 16 August 1945 and was among the first literary publishers licensed after the Second World War. It became the largest literary publisher in the GDR. From the start it published classics, world literature and exiled writers, including Hans Fallada, Anna Seghers and Lion Feuchtwanger."],"de":["Aufbau wurde am 16. August 1945 in Berlin gegründet und erhielt nach dem Zweiten Weltkrieg als einer der ersten belletristischen Verlage eine Lizenz. In der DDR wurde er zum größten belletristischen Verlag. Von Anfang an erschienen Klassiker, Weltliteratur und Exilautor:innen, darunter Hans Fallada, Anna Seghers und Lion Feuchtwanger."]}},
+  {"url":"https://www.mitteldeutscherverlag.de/","match":["mitteldeutsch"],"ge":"Mitteldeutscher Verlag","en":"Mitteldeutscher Verlag","de":"Mitteldeutscher Verlag","text":{"ge":["Mitteldeutscher Verlag 1946 წელს ჰალეში (ზაალე) დაარსდა და მალევე გდრ-ის წამყვან გამომცემლობებს შორის მოექცა; აქ გამოიცა ბრუნო აპიცის „შიშველი მგლებს შორის“ და კრისტა ვოლფის „ფიქრები კრისტა ტ.-ზე“. დღეს სცემს მხატვრულ ლიტერატურას, ქალაქისა და რეგიონის ისტორიას, ხელოვნებისა და მოგზაურობის წიგნებს. 2022 წელს მიიღო გერმანიის გამომცემლობის პრემია."],"en":["Mitteldeutscher Verlag was founded in Halle (Saale) in 1946 and soon became one of the leading publishers in the GDR, publishing Bruno Apitz’s Naked Among Wolves and Christa Wolf’s The Quest for Christa T. Today it publishes fiction, city and regional history, art and travel. It received the German Publishers’ Prize in 2022."],"de":["Der Mitteldeutsche Verlag wurde 1946 in Halle (Saale) gegründet und gehörte bald zu den führenden Verlagen der DDR; hier erschienen Bruno Apitz’ »Nackt unter Wölfen« und Christa Wolfs »Nachdenken über Christa T.«. Heute umfasst das Programm Belletristik, Stadt- und Regionalgeschichte, Kunst und Reisen. 2022 erhielt er den Deutschen Verlagspreis."]}},
+  {"url":"https://www.wallstein-verlag.de/","match":["wallstein"],"ge":"Wallstein Verlag","en":"Wallstein Verlag","de":"Wallstein Verlag","text":{"ge":["Wallstein Verlag 1986 წელს გეტინგენში დააარსეს ტედელ ფონ ვალმოდენმა და ძმებმა დირკ და ფრანკ შტაინჰოფებმა. პროგრამის ცენტრშია ჰუმანიტარული მეცნიერებები და მხატვრული ლიტერატურა. 2020 და 2023 წლებში მიიღო გერმანიის გამომცემლობის პრემია."],"en":["Wallstein Verlag was founded in Göttingen in 1986 by Thedel v. Wallmoden with Dirk and Frank Steinhoff. Its list centres on the humanities and fiction. It received the German Publishers’ Prize in 2020 and 2023."],"de":["Der Wallstein Verlag wurde 1986 von Thedel v. Wallmoden gemeinsam mit Dirk und Frank Steinhoff in Göttingen gegründet. Schwerpunkte sind Geisteswissenschaften und Belletristik. 2020 und 2023 wurde er mit dem Deutschen Verlagspreis ausgezeichnet."]}},
+  {"url":"https://www.ullstein.de/","match":["ullstein"],"ge":"Ullstein Buchverlage","en":"Ullstein Buchverlage","de":"Ullstein Buchverlage","text":{"ge":["Ullstein 1877 წელს ბერლინში ლეოპოლდ ულშტაინმა დააარსა, როგორც გაზეთების გამომცემლობა; წიგნების გამომცემლობა 1903 წელს შეიქმნა. 1920-იან წლებში ევროპის უდიდესი გამომცემლობა იყო. დღეს Ullstein Buchverlage შვედური მედიაკომპანია Bonnier-ის ნაწილია."],"en":["Ullstein was founded in Berlin in 1877 by Leopold Ullstein as a newspaper publisher; the book publishing house followed in 1903. In the 1920s it was the largest publisher in Europe. Today Ullstein Buchverlage is part of the Swedish media group Bonnier."],"de":["Ullstein wurde 1877 von Leopold Ullstein in Berlin als Zeitungsverlag gegründet; der Buchverlag folgte 1903. In den 1920er Jahren war Ullstein der größte Verlag Europas. Heute gehören die Ullstein Buchverlage zum schwedischen Medienunternehmen Bonnier."]}},
+  {"url":"https://www.klak-verlag.de/","match":["klak"],"ge":"KLAK Verlag","en":"KLAK Verlag","de":"KLAK Verlag","text":{"ge":["KLAK Verlag ბერლინში მოქმედი დამოუკიდებელი გამომცემლობაა (გამომცემელი იორგ ბეკენი), რომელიც სცემს თანამედროვე თემებზე შექმნილ მხატვრულ ლიტერატურას, არამხატვრულ და საყმაწვილო წიგნებს, მათ შორის პოეზიას, ისტორიასა და დეტექტივებს. 2018 წელს ფრანკფურტის წიგნის ბაზრობის საქართველოს პროგრამაში ხუთი ქართველი ავტორით მონაწილეობდა, მათ შორის ლუკა ბაქანიძით, კოტე ჯანდიერით და ზვიად რატიანით."],"en":["KLAK Verlag is an independent Berlin publisher (publisher: Jörg Becken) of literature, non-fiction and books for young readers on contemporary themes, including poetry, history and crime. In 2018 it took part in the Georgia guest-of-honour programme at the Frankfurt Book Fair with five Georgian authors, among them Luka Bakanidze, Kote Jandieri and Zviad Ratiani."],"de":["Der KLAK Verlag ist ein unabhängiger Berliner Verlag (Verleger: Jörg Becken) für zeitgenössische Themen in Literatur, Sachbuch und Jugendbuch, darunter Lyrik, Geschichte und Krimi. 2018 war er mit fünf georgischen Autoren im Georgien-Programm der Frankfurter Buchmesse vertreten, darunter Luka Bakanidze, Kote Jandieri und Zviad Ratiani."]}},
+  {"url":"https://www.reichert-verlag.de/","match":["reichert"],"ge":"Reichert Verlag","en":"Reichert Verlag","de":"Reichert Verlag","text":{"ge":["Dr. Ludwig Reichert Verlag 1969 წელს ვისბადენში დაარსდა და სპეციალიზებულია ჰუმანიტარულ მეცნიერებებზე: აღმოსავლეთმცოდნეობა, ენათმეცნიერება, ისტორია, არქეოლოგია, ხელოვნების ისტორია, წიგნისა და ბიბლიოთეკათმცოდნეობა, ასევე შუა საუკუნეების ხელნაწერების ფაქსიმილური გამოცემები. მის სერიებს შორისაა კავკასიოლოგიის სერიაც."],"en":["Dr. Ludwig Reichert Verlag was founded in Wiesbaden in 1969 and specialises in the humanities: Oriental studies, linguistics, history, archaeology, art history, book and library studies, and facsimile editions of medieval manuscripts. Its series include one on Caucasian studies."],"de":["Der Dr. Ludwig Reichert Verlag wurde 1969 in Wiesbaden gegründet und ist auf Geisteswissenschaften spezialisiert: Orientalistik, Sprachwissenschaft, Geschichte, Archäologie, Kunstgeschichte, Buch- und Bibliothekswissenschaft sowie Faksimileausgaben mittelalterlicher Handschriften. Zu seinen Reihen gehört auch eine zur Kaukasiologie."]}},
+  {"url":"https://www.fibre-verlag.de/","match":["fibre"],"ge":"fibre Verlag","en":"fibre Verlag","de":"fibre Verlag","text":{"ge":["fibre Verlag 1993 წელს ოსნაბრიუკში პეტერ ფიშერის თანადაფუძნებით შეიქმნა. ეს იყო არამხატვრული და სამეცნიერო გამომცემლობა, რომლის თემატური ფოკუსი ცენტრალური და აღმოსავლეთი ევროპა იყო. 2025 წლის ბოლოს საქმიანობა შეწყვიტა; მისი პროგრამის უდიდესი ნაწილი ბერლინის გამომცემლობა Duncker & Humblot-მა შეიძინა."],"en":["fibre Verlag was co-founded in Osnabrück in 1993 by Peter Fischer as a non-fiction and academic publisher focused on Central and Eastern Europe. It ceased operations at the end of 2025; most of its list was taken over by the Berlin academic publisher Duncker & Humblot."],"de":["Der fibre Verlag wurde 1993 von Peter Fischer in Osnabrück mitgegründet, ein Sachbuch- und Wissenschaftsverlag mit Schwerpunkt Ostmittel- und Osteuropa. Ende 2025 stellte er seine Tätigkeit ein; der Großteil des Programms ging an den Berliner Wissenschaftsverlag Duncker & Humblot."]}}
 ];
 const PUB_URLS = { sovlab: 'https://sovlab.ge', 'სოვლაბ': 'https://sovlab.ge', matarebeli: 'https://matarebelicomics.com', 'მატარებელი': 'https://matarebelicomics.com', dagyeli: 'https://dagyeliverlag.com', interkontinental: 'https://interkontinental-verlag.de',
   kolchis: 'https://www.kolchisverlag.ch', unionsverlag: 'https://www.unionsverlag.com', 'klett-cotta': 'https://www.klett-cotta.de',
@@ -970,7 +1078,8 @@ const SUPPORTERS = [
   { name: 'მატარებელი კომიქსი', url: 'https://matarebelicomics.com', logo: 'https://matarebelicomics.com/cdn/shop/files/Typography_With_Tagline0.svg', pubScale: 1.35 },
   { name: 'BYTE CHALLENGE', url: 'https://byte-challenge.de/en/', logo: './logo-byte-challenge.png' },
   { name: 'Hotel Continental – Art Space in Exile', url: 'https://artspaceinexile.org/', logo: './hotel-continental-logo.svg' },
-  { name: 'Der Zauberberg', url: 'https://www.der-zauberberg.eu/' }
+  { name: 'Der Zauberberg', url: 'https://www.der-zauberberg.eu/', logo: './logo-zauberberg.png' },
+  { name: 'სინათლე მედია', url: 'https://sinatle.media/', logo: './logo-sinatle-melia.png' }
 ];
 
 const PUBLISHERS = [
@@ -1104,6 +1213,28 @@ class Component extends DCLogic {
     this.postSignup(workshopTitle).then(() => this.setState({ sending: false, sent: true }));
   }
 
+  dayTimes(iso) {
+    const isMon = (p) => /10-12|12\.10|12\/10/.test(p.date || '');
+    const items = (this.state.sheetProgram || []).filter((p) => (iso === '2026-10-12') === isMon(p));
+    const m = (v) => { const x = String(v || '').match(/(\d{1,2})[:.](\d{2})/); return x ? +x[1] * 60 + +x[2] : null; };
+    let a = null, b = null;
+    items.forEach((p) => { const st = m(p.start), en = m(p.end) != null ? m(p.end) : st; if (st != null && (a == null || st < a)) a = st; if (en != null && (b == null || en > b)) b = en; });
+    const f = (v) => String(Math.floor(v / 60)).padStart(2, '0') + ':' + String(v % 60).padStart(2, '0');
+    return a == null ? '' : (b != null && b > a ? f(a) + '–' + f(b) : f(a));
+  }
+
+  copyText(text, key) {
+    const done = () => { this.setState({ vCopied: key }); clearTimeout(this._vT); this._vT = setTimeout(() => this.setState({ vCopied: null }), 2200); };
+    const legacy = () => {
+      const t = document.createElement('textarea');
+      t.value = text; t.setAttribute('readonly', ''); t.style.position = 'fixed'; t.style.opacity = '0';
+      document.body.appendChild(t); t.select();
+      let ok = false; try { ok = document.execCommand('copy'); } catch (e) {}
+      t.remove(); if (ok) done(); else window.prompt('', text);
+    };
+    if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(text).then(done).catch(legacy); else legacy();
+  }
+
   downloadIcs(ev) {
     const t = (s) => { const m = String(s || '').match(/(\d{1,2})[:.](\d{2})/); return m ? (m[1].padStart(2, '0') + m[2] + '00') : null; };
     const st = t(ev.start) || '120000';
@@ -1214,13 +1345,15 @@ class Component extends DCLogic {
     ((u) => (/^\.\//.test(u) ? import(u + '?v=' + Date.now()).catch(() => import(u)) : import(u)))((RES('./workshop-data.js')))
       .then((m) => m.loadWorkshops())
       .then((items) => { this.rawWorkshops = items; this.setState({ sheetWorkshops: items }); this.mergeProgram(); })
-      .catch(() => {});
+      .catch(() => { this.wsGaveUp = true; this.mergeProgram(); });
   }
 
   // Programme sessions that match a row in the Workshops tab take their title, description, facilitator and time from that tab.
   mergeProgram() {
     const prog = this.rawProgram;
     if (!prog) return;
+    // Wait for the Workshops tab (max 4 s) so the programme renders once, already merged, instead of flashing raw rows first.
+    if (!this.rawWorkshops && !this.wsGaveUp) return;
     const ws = this.rawWorkshops || [];
     const norm = (s) => String(s || '').toLowerCase().replace(/["„“”']/g, '').replace(/\s+/g, ' ').trim();
     const find = (p) => ws.find((w) => {
@@ -1250,7 +1383,7 @@ class Component extends DCLogic {
   loadProgramSheet() {
     ((u) => (/^\.\//.test(u) ? import(u + '?v=' + Date.now()).catch(() => import(u)) : import(u)))((RES('./program-data.js')))
       .then((m) => m.loadProgram())
-      .then((items) => { this.rawProgram = items; this.setState({ programHidden: items.hidden || 0 }); this.mergeProgram(); })
+      .then((items) => { this.rawProgram = items; this.setState({ programHidden: items.hidden || 0 }); if (!this.rawWorkshops && !this._wsWait) this._wsWait = setTimeout(() => { this.wsGaveUp = true; this.mergeProgram(); }, 4000); this.mergeProgram(); })
       .catch(() => { if (!this.state.sheetProgram) this.setState({ sheetProgram: null }); });
   }
 
@@ -1633,6 +1766,8 @@ class Component extends DCLogic {
         mobStyle: 'display:block;width:100%;text-align:left;padding:0.8rem 1rem;border-radius:12px;border:none;cursor:pointer;font-family:\'Noto Sans Georgian\',Archivo,sans-serif;font-size:1rem;font-weight:700;' + (tab === t ? 'background:#172a55;color:#fff' : 'background:transparent;color:#172a55'),
         go: () => this.goTab(t, t === 'catalogue' ? this.state.pubFilter : null)
       })),
+      // Countdown disappears once the event has started; the schedule block above stays.
+      showCountdown: d === null || d > 0,
       countCells: [
         cell(secs === null ? '—' : String(Math.floor(secs / 86400)), units[0], false),
         cell(secs === null ? '—' : pad(Math.floor(secs / 3600) % 24), units[1], false),
@@ -1730,8 +1865,10 @@ class Component extends DCLogic {
             label: d.label, sub: d.sub, hasSub: !!d.sub,
             pillStyle: "font-family:'Noto Sans Georgian','Archivo',sans-serif;font-size:1rem;font-weight:800;border-radius:999px;padding:0.35rem 0.95rem;" + 'color:#fff;background:#e83828',
             stages: stages, hasItems: stages.length > 0,
+            ...(() => { const t = d.event && stages.length === 0 ? '19:00 · ' + LIVE_TEXT[lang].doors : this.dayTimes(d.iso); return { times: t, hasTimes: !!t }; })(),
+            venue: LIVE_ADDR, mapUrl: LIVE_MAP,
             isEmpty: stages.length === 0 && !d.event,
-            showNotes: !d.event, showMoreSoon: !d.event && (this.state.programHidden || 0) >= 3,
+            showNotes: !d.event, showMoreSoon: !d.event && (this.state.programHidden || 0) >= 3 && Date.now() < Date.parse('2026-10-10T00:00:00+02:00'),
             hasEvent: stages.length === 0 && !!d.event, eventTitle: d.event || '',
             eventNote: { ge: 'დეტალები მალე გამოქვეყნდება.', en: 'Details to be announced.', de: 'Details folgen.' }[lang]
           };
@@ -1739,10 +1876,12 @@ class Component extends DCLogic {
       })(),
       hasStages: !!this.state.sheetProgram && this.state.sheetProgram.length > 0,
       noStages: !(this.state.sheetProgram && this.state.sheetProgram.length > 0),
-      programMoreSoon: (this.state.programHidden || 0) >= 3,
+      // "Programme is being updated" note disappears automatically from 10 Oct 2026 (Berlin time).
+      programMoreSoon: (this.state.programHidden || 0) >= 3 && Date.now() < Date.parse('2026-10-10T00:00:00+02:00'),
       programMoreSoonText: { ge: 'პროგრამა ახლდება - დამატებითი ღონისძიებები მალე გამოცხადდება', en: 'More events to be announced soon.', de: 'Weitere Programmpunkte folgen in Kürze.' }[lang],
       programEmpty: !!this.state.sheetProgram && this.state.sheetProgram.length === 0,
       programTba: { ge: 'პროგრამა მალე გამოქვეყნდება.', en: 'The programme will be announced soon.', de: 'Das Programm wird in Kürze veröffentlicht.' }[lang],
+
       supportersTitle: { ge: 'მხარდამჭერები', en: 'Supporters', de: 'Unterstützer' }[lang],
       supporters: SUPPORTERS.map((s) => ({ name: s.name, url: s.url || null, logo: !!s.logo, noLogo: !s.logo,
         logoEl: s.logo ? React.createElement('span', { style: { display: 'inline-flex', alignItems: 'center', gap: 8 } },
@@ -1755,15 +1894,16 @@ class Component extends DCLogic {
         const names = pubNames.filter((n) => !isGermanPub(n));
         PUB_INFO.forEach((info) => { if (!names.some((n) => findPub(n) === info)) names.push(info.en); });
         const exp = this.state.expandedPubs || {};
-        return names.map((name) => {
+        // Only publishers with a written description are listed.
+        return names.filter((name) => { const info = findPub(name); return !!(info && ((info.text[lang] || info.text.ge || []).length)); }).map((name) => {
           const info = findPub(name);
           const paras = info ? (info.text[lang] || info.text.ge || []).map((x) => tx(x, lang)) : [];
           const fallback = { ge: 'აღწერა მალე დაემატება.', en: 'Description coming soon.', de: 'Beschreibung folgt in Kürze.' }[lang];
           const open = !!exp[name];
           return {
             name: info ? info[lang] : name,
-            logo: (() => { const s = SUPPORTERS.find((x) => x.logo && info && info.match.some((m) => x.name.toLowerCase().indexOf(m) >= 0)); return s ? RES(s.logo) : null; })(),
-            logoFilter: (() => { const s = SUPPORTERS.find((x) => x.logo && info && info.match.some((m) => x.name.toLowerCase().indexOf(m) >= 0)); return s && (s.navy || /white/i.test(s.logo)) ? 'brightness(0) invert(13%) sepia(40%) saturate(2000%) hue-rotate(205deg)' : 'none'; })(),
+            logo: (() => { const s = SUPPORTERS.find((x) => x.logo && info && info.match.some((m) => x.name.toLowerCase().indexOf(m) >= 0)); return s ? RES(s.logo) : (info && info.logo ? RES(info.logo) : null); })(),
+            logoFilter: (() => { const s = SUPPORTERS.find((x) => x.logo && info && info.match.some((m) => x.name.toLowerCase().indexOf(m) >= 0)); return (s && (s.navy || /white/i.test(s.logo))) || (!s && info && info.logo) ? 'brightness(0) invert(13%) sepia(40%) saturate(2000%) hue-rotate(205deg)' : 'none'; })(),
             logoScale: (() => { const s = SUPPORTERS.find((x) => x.logo && info && info.match.some((m) => x.name.toLowerCase().indexOf(m) >= 0)); return (s && s.pubScale) || 1; })(),
             address: open && info && info.address ? (info.address[lang] || info.address.ge) : null,
             email: info && info.email ? info.email : null, mailto: info && info.email ? 'mailto:' + info.email : null,
@@ -1797,7 +1937,8 @@ class Component extends DCLogic {
       clearLabel: { ge: 'გასუფთავება', en: 'Clear', de: 'Zurücksetzen' }[lang],
       clearFilters: () => this.setState({ catFilter: null, langFilter: null, pubFilter: null }),
       resultCount: totalShown + ' / ' + allBooks.length,
-      noResults: totalShown === 0,
+      // "Catalogue is being updated" note disappears automatically from 10 Oct 2026 (Berlin time).
+      noResults: totalShown === 0 && Date.now() < Date.parse('2026-10-10T00:00:00+02:00'),
       liveCalLabel: { ge: 'კალენდარში დამატება', en: 'Add to calendar', de: 'Zum Kalender' }[lang],
       liveShareLabel: this.state.liveCopied ? { ge: 'ბმული დაკოპირდა', en: 'Link copied', de: 'Link kopiert' }[lang] : { ge: 'გაზიარება', en: 'Share', de: 'Teilen' }[lang],
       liveMoreLabel: { ge: 'მეტი ინფორმაცია', en: 'More info', de: 'Mehr Infos' }[lang],
@@ -1828,11 +1969,34 @@ class Component extends DCLogic {
           navigator.share({ title: 'Live @ Georgian Book Day', url: url }).catch((err) => { if (!err || err.name !== 'AbortError') copy(); });
         } else copy();
       },
-      live: LIVE_TEXT[lang],
+      // Address sits in the day header row above, so the card only lists entry info.
+      live: Object.assign({}, LIVE_TEXT[lang], { info: LIVE_TEXT[lang].info.filter((x) => !x.isPin) }),
+      liveCalLabel: { ge: 'კალენდარში დამატება', en: 'Add to calendar', de: 'Zum Kalender' }[lang],
       liveDate: { ge: '12 ოქტომბერი', en: '12 October', de: '12. Oktober' }[lang],
       liveCta: { ge: 'პროგრამა', en: 'See programme', de: 'Zum Programm' }[lang],
       goLive: () => this.goTab('program'),
       venueMapSrc: 'https://maps.google.com/maps?ll=' + (this.state.venueLL || '52.4884,13.4552') + '&z=16&t=m&hl=' + (lang === 'ge' ? 'ka' : lang) + '&output=embed',
+      venueMapUrl: LIVE_MAP, venueAddr: LIVE_ADDR,
+      bothDaysLabel: { ge: 'ორივე დღე', en: 'Both days', de: 'Beide Tage' }[lang],
+      ...(() => { const v = this.props.scheduleStyle ?? 'cards-minimal'; return { ssLines: v === 'lines', ssRow: v === 'row', ssColumns: v === 'columns', ssCards: v === 'cards', ssCardsMin: v === 'cards-minimal' }; })(),
+      homeSchedule: [
+        { wd: { ge: 'კვირა', en: 'Sunday', de: 'Sonntag' }[lang], date: T.dateOnly, time: this.dayTimes('2026-10-11'), hasTime: !!this.dayTimes('2026-10-11'), note: '', hasNote: false, what: { ge: 'წიგნის დღე', en: 'Book Day', de: 'Buchtag' }[lang] },
+        { wd: { ge: 'ორშაბათი', en: 'Monday', de: 'Montag' }[lang], date: { ge: '12 ოქტომბერი', en: '12 October', de: '12. Oktober' }[lang], time: '19:00', hasTime: true, note: LIVE_TEXT[lang].doors, hasNote: true, what: { ge: 'დახურვის საღამო · LIVE', en: 'Closing Night · LIVE', de: 'Abschlussabend · LIVE' }[lang] }
+      ].map((h, i) => Object.assign(h, {
+        full: h.wd + ', ' + h.date,
+        timeFull: h.time + (h.note ? ' (' + h.note + ')' : ''),
+        whatNote: h.what + (h.note ? ' · ' + h.note : ''),
+        divider: i ? '1px solid rgba(23,42,85,0.2)' : '0', padL: i ? '1.4rem' : '0'
+      })),
+      vOpenMaps: { ge: 'Google Maps-ში გახსნა', en: 'Open in Google Maps', de: 'In Google Maps öffnen' }[lang],
+      vCopyLabel: this.state.vCopied === 'addr' ? { ge: 'დაკოპირდა ✓', en: 'Copied ✓', de: 'Kopiert ✓' }[lang] : { ge: 'მისამართის კოპირება', en: 'Copy address', de: 'Adresse kopieren' }[lang],
+      vShareLabel: this.state.vCopied === 'link' ? { ge: 'ბმული დაკოპირდა ✓', en: 'Link copied ✓', de: 'Link kopiert ✓' }[lang] : { ge: 'გაზიარება', en: 'Share', de: 'Teilen' }[lang],
+      copyVenueAddr: () => this.copyText(LIVE_ADDR, 'addr'),
+      shareVenue: () => {
+        const touch = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
+        if (touch && navigator.share) navigator.share({ title: LIVE_ADDR, text: LIVE_ADDR, url: LIVE_MAP }).catch((e) => { if (!e || e.name !== 'AbortError') this.copyText(LIVE_MAP, 'link'); });
+        else this.copyText(LIVE_MAP, 'link');
+      },
       directionsLabel: { ge: 'მარშრუტი', en: 'Directions', de: 'Route' }[lang],
       venueFacts: [
         { label: { ge: 'ადგილი', en: 'Venue', de: 'Ort' }[lang], value: 'Hotel Continental – Art Space in Exile' },
@@ -1841,10 +2005,9 @@ class Component extends DCLogic {
         { label: { ge: 'შესვლა', en: 'Entry', de: 'Eintritt' }[lang], value: { ge: 'უფასო', en: 'Free', de: 'Frei' }[lang] }
       ],
       pressItems: [
-        { name: { ge: 'პრეს-რელიზი', en: 'Press release', de: 'Pressemitteilung' }[lang], meta: 'PDF' },
-        { name: { ge: 'ფოტოები', en: 'Photo pack', de: 'Fotomaterial' }[lang], meta: 'ZIP' },
-        { name: { ge: 'ლოგოები', en: 'Logos', de: 'Logos' }[lang], meta: 'PNG · SVG' }
-      ],
+        { name: 'Press release · Georgian Book Day in Berlin', meta: 'English · PDF', file: 'Georgian-Book-Day-Berlin-2026_Press-Release_EN.pdf', href: RES('./press/Georgian-Book-Day-Berlin-2026_Press-Release_EN.pdf') },
+        { name: 'Pressemitteilung · Georgischer Buchtag in Berlin', meta: 'Deutsch · PDF', file: 'Georgischer-Buchtag-Berlin-2026_Pressemitteilung_DE.pdf', href: RES('./press/Georgischer-Buchtag-Berlin-2026_Pressemitteilung_DE.pdf') }
+      ].map((x) => Object.assign(x, { cta: { ge: 'ჩამოტვირთვა', en: 'Download', de: 'Herunterladen' }[lang] })),
       contacts: [
         { label: { ge: 'ელფოსტა', en: 'Email', de: 'E-Mail' }[lang], value: 'info@gzaeurope.org', href: 'mailto:info@gzaeurope.org', isMail: true },
         { label: { ge: 'ინსტაგრამი', en: 'Instagram', de: 'Instagram' }[lang], value: '@gza.europe', href: 'https://www.instagram.com/gza.europe/', isIg: true }
