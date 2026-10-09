@@ -50,6 +50,7 @@
     body { margin:0; background:#afd6e7; color:#172a55; font-family:'Archivo',system-ui,sans-serif; -webkit-font-smoothing:antialiased; }
     a { color:#e83828; }
     a:hover { color:#c92c1e; }
+    @keyframes gbdSpin { to { transform: rotate(360deg); } }
     @keyframes pulseGlow { 0%,100% { box-shadow:0 0 0 0 rgba(232,56,40,0.4) } 50% { box-shadow:0 0 0 12px rgba(232,56,40,0) } }
     @keyframes venuePulse { 0% { transform:scale(0.3); opacity:1 } 100% { transform:scale(1.7); opacity:0 } }
     @keyframes riseIn { from { opacity:0; transform:translateY(12px) } to { opacity:1; transform:none } }
@@ -259,6 +260,12 @@
           </a>
         </sc-for>
       </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ tabLoading }}" hint-placeholder-val="{{ false }}">
+    <div style="min-height:55vh;display:flex;align-items:center;justify-content:center;gap:0.6rem;color:rgba(23,42,85,0.6);font-size:0.95rem;font-weight:600">
+      <span style="width:16px;height:16px;border-radius:50%;border:2px solid rgba(23,42,85,0.2);border-top-color:#e83828;animation:gbdSpin 0.8s linear infinite"></span>{{ loadingLabel }}
     </div>
   </sc-if>
 
@@ -1345,7 +1352,7 @@ class Component extends DCLogic {
     ((u) => (/^\.\//.test(u) ? import(u + '?v=' + Date.now()).catch(() => import(u)) : import(u)))((RES('./workshop-data.js')))
       .then((m) => m.loadWorkshops())
       .then((items) => { this.rawWorkshops = items; this.setState({ sheetWorkshops: items }); this.mergeProgram(); })
-      .catch(() => { this.wsGaveUp = true; this.mergeProgram(); });
+      .catch(() => { this.wsGaveUp = true; this.setState({ wsError: true }); this.mergeProgram(); });
   }
 
   // Programme sessions that match a row in the Workshops tab take their title, description, facilitator and time from that tab.
@@ -1384,7 +1391,7 @@ class Component extends DCLogic {
     ((u) => (/^\.\//.test(u) ? import(u + '?v=' + Date.now()).catch(() => import(u)) : import(u)))((RES('./program-data.js')))
       .then((m) => m.loadProgram())
       .then((items) => { this.rawProgram = items; this.setState({ programHidden: items.hidden || 0 }); if (!this.rawWorkshops && !this._wsWait) this._wsWait = setTimeout(() => { this.wsGaveUp = true; this.mergeProgram(); }, 4000); this.mergeProgram(); })
-      .catch(() => { if (!this.state.sheetProgram) this.setState({ sheetProgram: null }); });
+      .catch(() => { if (!this.state.sheetProgram) this.setState({ sheetProgram: null, programError: true }); });
   }
 
   // Books, authors, publishers and descriptions come from the festival Google Sheet.
@@ -1661,8 +1668,19 @@ class Component extends DCLogic {
     return {
       T: T,
       isGe: lang === 'ge', isEn: lang === 'en', isDe: lang === 'de',
-      onHome: tab === 'home', onProgram: tab === 'program', onCatalogue: tab === 'catalogue' && SHOW_CAT, showCat: SHOW_CAT,
-      onWorkshops: tab === 'workshops',
+      // Tabs fed by the Google Sheets stay hidden until their data has arrived, so placeholder/older content never flashes first.
+      ...(() => {
+        const progReady = !!this.state.sheetProgram || !!this.state.programError;
+        const catReady = !!this.state.sheetBooks || !!this.state.sheetError;
+        const wsReady = !!this.state.sheetWorkshops || !!this.state.wsError;
+        this._catReady = catReady;
+        return {
+          onProgram: tab === 'program' && progReady, onCatalogue: tab === 'catalogue' && SHOW_CAT && catReady, onWorkshops: tab === 'workshops' && wsReady,
+          tabLoading: (tab === 'program' && !progReady) || (tab === 'catalogue' && !catReady) || (tab === 'publishers' && !catReady) || (tab === 'workshops' && !wsReady),
+          loadingLabel: { ge: 'იტვირთება…', en: 'Loading…', de: 'Wird geladen…' }[lang]
+        };
+      })(),
+      onHome: tab === 'home', showCat: SHOW_CAT,
       onJourney: tab === 'journey', mapSrc: './book-journey-map.html?lang=' + lang,
       gpsUrl: GPS_URL,
       gpsAvailable: Date.now() < GPS_EXPIRES.getTime(),
@@ -1678,7 +1696,7 @@ class Component extends DCLogic {
         open: { ge: 'გახსნა ახალ ფანჯარაში', en: 'Open in new window', de: 'In neuem Fenster öffnen' }[lang],
         note: { ge: 'მანქანის რეალური მდებარეობა გადამზიდავის GPS-იდან. ბმული აქტიურია 2 ოქტომბრამდე.', en: 'Real-time position of the truck from the carrier’s GPS. Link active until 2 October.', de: 'Echtzeitposition des LKW über das GPS des Spediteurs. Link aktiv bis 2. Oktober.' }[lang]
       },
-      onPublishers: tab === 'publishers', onVenue: tab === 'venue', onPress: tab === 'press', onContact: tab === 'contact',
+      onPublishers: tab === 'publishers' && (!!this.state.sheetBooks || !!this.state.sheetError), onVenue: tab === 'venue', onPress: tab === 'press', onContact: tab === 'contact',
       wsDeadline: { ge: 'რეგისტრაციის ბოლო ვადა: 9 ოქტომბერი.', en: 'Registration deadline: 9 October.', de: 'Anmeldeschluss: 9. Oktober.' }[lang],
       workshops: (this.state.sheetWorkshops && this.state.sheetWorkshops.length ? this.state.sheetWorkshops.map((s) => ({
         time: [s.date, s.time].filter(Boolean).join(' · '), places: null,
